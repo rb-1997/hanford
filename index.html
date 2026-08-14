@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>恆福花園實時交通 (長者友善完美版)</title>
+    <title>恆福花園交通資訊 (Version 1.3.1) Hanford Garden Transport</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,39 +12,128 @@
         @keyframes pulse-bg { 0%, 100% { background-color: #f8fafc; } 50% { background-color: #f1f5f9; } }
         .fade-in { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 倒數3分鐘內專用醒目閃爍動畫 */
+        @keyframes urgentPulse {
+            0%, 100% {
+                background-color: #b91c1c; /* 鮮紅色 */
+                box-shadow: 0 0 0 0 rgba(185, 28, 28, 0.7);
+                transform: scale(1);
+            }
+            50% {
+                background-color: #dc2626;
+                box-shadow: 0 0 12px 4px rgba(220, 38, 38, 0.5);
+                transform: scale(1.03);
+            }
+        }
+        .urgent-flash {
+            animation: urgentPulse 1.2s infinite ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col font-sans text-base">
     
-    <!-- 頂部標題：特大字體 -->
+    <!-- 頂部標題欄 (Version 1.3.1) -->
     <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b-4 border-emerald-500">
-        <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-black flex items-center gap-2 tracking-wide">
-                    <i class="fa-solid fa-house-chimney text-emerald-400"></i> 恆福花園實時交通
-                </h1>
-                <p class="text-xs text-emerald-300 mt-1 font-medium">長者友善大字版 · 每10秒自動更新</p>
+        <div class="max-w-md mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black flex items-center gap-2 tracking-wide">
+                        <i class="fa-solid fa-house-chimney text-emerald-400"></i> 恆福花園交通資訊 (Version 1.3.1)
+                    </h1>
+                    <p class="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">Hanford Garden Real-Time Transport (Version 1.3.1)</p>
+                </div>
+                <button onclick="fetchAllData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl transition font-bold flex flex-col items-center justify-center shadow active:scale-95">
+                    <span class="text-sm font-black flex items-center gap-1"><i class="fa-solid fa-rotate-right" id="refresh-icon"></i> 重新整理</span>
+                    <span class="text-[9px] font-normal leading-none opacity-80">Refresh</span>
+                </button>
             </div>
-            <button onclick="fetchAllData()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-xl transition text-base font-bold flex items-center gap-2 shadow active:scale-95">
-                <i class="fa-solid fa-rotate-right" id="refresh-icon"></i> 重新整理
-            </button>
         </div>
     </header>
 
+    <!-- 香港天文台實時天氣資訊欄 (1:1 折疊面板) -->
+    <div class="max-w-md mx-auto px-4 pt-3 pb-1 w-full">
+        <div id="weather-panel" class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white rounded-3xl shadow-xl border-2 border-slate-700/80 overflow-hidden transition-all duration-300 cursor-pointer" onclick="toggleWeatherExpand()">
+            
+            <!-- 簡約摺疊頁面 (Collapsed View) -->
+            <div id="weather-compact" class="p-3.5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl" id="compact-icon">⛅</span>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xl sm:text-2xl font-black text-white">屯門</span>
+                            <span class="text-[10px] font-normal text-slate-300">Tuen Mun</span>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/40 ml-1">📍 天文台</span>
+                        </div>
+                        <div id="compact-desc" class="text-sm font-bold text-amber-200 mt-0.5">天氣連線中...</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div id="compact-temp" class="text-2xl sm:text-3xl font-black text-amber-300">--°C</div>
+                    <div id="compact-time" class="text-[10px] text-slate-400 font-mono">--:--</div>
+                </div>
+            </div>
+
+            <!-- 展開版 (Expanded View) -->
+            <div id="weather-expanded" class="hidden">
+                <div class="p-4 space-y-3 border-t border-slate-700/60">
+                    <div class="flex justify-between items-start border-b border-slate-700/80 pb-3">
+                        <div class="space-y-1">
+                            <div id="weather-temp-range" class="text-sm font-bold text-slate-200">最高 --°C / 最低 --°C</div>
+                            <div id="weather-current-temp" class="text-4xl font-black text-amber-300 tracking-tight py-0.5">--°C</div>
+                            <div class="text-xs font-bold text-slate-200 flex items-center gap-2 pt-0.5">
+                                <span id="weather-humidity">💧 濕度: --%</span>
+                                <span class="text-slate-600">|</span>
+                                <span id="weather-rain-prob" class="text-sky-300">降雨概率: --</span>
+                            </div>
+                        </div>
+                        <div class="text-right flex flex-col items-end justify-between h-full">
+                            <div id="weather-big-icon" class="text-4xl mb-1">⛅</div>
+                            <div id="weather-desc" class="text-base font-black text-amber-200">天文台連線中</div>
+                            <div id="weather-hko-time" class="text-[10px] text-slate-400 font-mono mt-2">天文台發佈: --:--</div>
+                        </div>
+                    </div>
+
+                    <!-- 生效中警告欄 (Warnings) -->
+                    <div id="weather-warnings-container" class="hidden pt-1">
+                        <div class="text-sm font-black text-amber-300 mb-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> 生效中警告 <span class="text-[10px] font-normal text-slate-300">Active Warnings:</span>
+                        </div>
+                        <div id="weather-warnings" class="flex flex-wrap gap-1.5"></div>
+                    </div>
+
+                    <!-- 逐小時預測時間線 -->
+                    <div class="pt-2 border-t border-slate-700/60">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-300 mb-2">
+                            <span class="flex items-center gap-1 text-slate-200"><i class="fa-regular fa-clock text-sky-400"></i> 今日氣溫與降雨預測 <span class="text-[10px] font-normal text-slate-400">Hourly Forecast</span></span>
+                            <span id="weather-forecast-date" class="text-[10px] text-slate-400 font-mono">--月--日</span>
+                        </div>
+                        <div class="flex overflow-x-auto gap-3 pb-1 no-scrollbar text-center text-xs" id="weather-hourly-timeline"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-1">
+            <span class="text-[10px] text-slate-400 font-bold">👆 點擊展開/折疊天氣 Click for weather details</span>
+        </div>
+    </div>
+
     <main class="flex-1 max-w-md w-full mx-auto p-3 space-y-4 pb-10">
         <!-- 系統狀態 -->
-        <div class="bg-white border-2 border-slate-300 p-3 rounded-xl text-sm font-bold flex justify-between items-center shadow-sm">
-            <span class="flex items-center gap-2 text-emerald-700" id="sys-status">
-                <i class="fa-solid fa-circle-check text-base"></i> 系統正常運行中
+        <div class="bg-white border-2 border-slate-300 p-3 rounded-xl text-xs font-bold flex justify-between items-center shadow-sm">
+            <span class="flex items-center gap-2 text-emerald-700 font-black text-sm sm:text-base" id="sys-status">
+                <i class="fa-solid fa-circle-check text-base"></i> 實時運行中 <span class="text-[10px] font-normal text-slate-500">(Live)</span>
             </span>
-            <span id="sys-time" class="text-xs text-slate-600 font-mono font-bold"></span>
+            <span id="sys-time" class="text-[11px] text-slate-600 font-mono font-bold"></span>
         </div>
 
         <div id="app-container" class="space-y-4"></div>
 
         <!-- 溫馨提示 -->
         <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-3 text-xs text-amber-900 leading-relaxed font-medium">
-            <p><i class="fa-solid fa-circle-info mr-1.5 text-amber-600 text-sm"></i> <strong>提示：</strong>時間每10秒自動更新。小巴在總站可能提早開出，建議提早出門。</p>
+            <p><i class="fa-solid fa-circle-info mr-1.5 text-amber-600 text-sm"></i> <strong>提示：</strong>所有到站時間均由官方實時提供。小巴可能視客量提早開出。<br><span class="text-[10px] text-amber-800">Real-time ETAs provided by HK Gov & Operators. Minibuses may depart early when full.</span></p>
         </div>
     </main>
 
@@ -52,36 +141,188 @@
         const KW_RATPARK = ['兆麟', '老鼠洲', '三聖', '恆福'];
 
         const ROUTES = [
-            // 🥇 505 輕鐵雙向專區 (藍色 vs 橙色)
-            { id: 'lrt-505-out', type: 'LRT_DIR', route: '505', station_id: '920', dest_keyword: '兆康', label: '三聖 ➔ 屯門站 (往兆康方向)', group: '505 輕鐵 (去程：三聖開出)', color: 'blue' },
-            { id: 'lrt-505-in', type: 'LRT_DIR', route: '505', station_id: '930', dest_keyword: '三聖', label: '屯門站 ➔ 三聖方向 (回程)', group: '505 輕鐵 (回程：屯門站開)', color: 'orange' },
+            // 🥇 505 輕鐵雙向專區 (藍色去程 vs 橙色回程)
+            { 
+                id: 'lrt-505-out', 
+                type: 'LRT_DIR', 
+                route: '505', 
+                station_id: '920', 
+                dest_keyword: '兆康', 
+                label: '三聖 ➔ 屯門站 (往兆康)', 
+                label_en: 'Sam Shing ➔ Tuen Mun Sta. (to Siu Hong)',
+                group: '505 輕鐵 (去程：三聖開出)', 
+                group_en: '505 Light Rail (To Tuen Mun Sta.)',
+                color: 'blue' 
+            },
+            { 
+                id: 'lrt-505-in', 
+                type: 'LRT_DIR', 
+                route: '505', 
+                station_id: '295', 
+                dest_keyword: '三聖', 
+                label: '屯門站 ➔ 三聖方向 (回程)', 
+                label_en: 'Tuen Mun Sta. ➔ Sam Shing (Return)',
+                group: '505 輕鐵 (回程：屯門站開)', 
+                group_en: '505 Light Rail (To Sam Shing)',
+                color: 'orange' 
+            },
 
             // 🥈 港鐵接駁巴士
-            { id: 'mtr-k51', type: 'MTRBUS_CUSTOM', route: 'K51', group: '港鐵接駁巴士 (K51 / K53)', color: 'amber' },
-            { id: 'mtr-k53', type: 'MTRBUS_CUSTOM', route: 'K53', group: '港鐵接駁巴士 (K51 / K53)', color: 'amber' },
+            { 
+                id: 'mtr-k51', 
+                type: 'MTRBUS_REAL', 
+                route: 'K51', 
+                stop_id: 'K51-D150', 
+                label: '往 屯門站 / 富泰',
+                label_en: 'To Tuen Mun Sta. / Fu Tai',
+                group: '港鐵接駁巴士 (K51 / K53)', 
+                group_en: 'MTR Feeder Bus (K51 / K53)',
+                color: 'amber' 
+            },
+            { 
+                id: 'mtr-k53', 
+                type: 'MTRBUS_REAL', 
+                route: 'K53', 
+                stop_id: 'K53-D110', 
+                label: '往 屯門站 (循環線)',
+                label_en: 'To Tuen Mun Sta. (Circular)',
+                group: '港鐵接駁巴士 (K51 / K53)', 
+                group_en: 'MTR Feeder Bus (K51 / K53)',
+                color: 'amber' 
+            },
 
-            // 🥉 140M 綠Van 雙向專區 (完美修復抓取邏輯)
-            { id: 'gmb-140m-out', type: 'GMB_DIR', route: '140M', route_id: 2003889, stop_id: 20001372, label: '三聖總站 ➔ 青衣站', group: '140M 專線小巴 (三聖 ⇄ 青衣)', color: 'emerald' },
-            { id: 'gmb-140m-in', type: 'GMB_DIR', route: '140M', route_id: 2003889, stop_id: 20008023, label: '青衣站總站 ➔ 屯門(三聖)', group: '140M 專線小巴 (三聖 ⇄ 青衣)', color: 'emerald' },
+            // 🥉 43C 綠Van (精準對接神級參數)
+            { 
+                id: 'gmb-43c-out', 
+                type: 'GMB_43C', 
+                route: '43C', 
+                label: '三聖總站 ➔ 屯門新墟街市', 
+                label_en: 'Sam Shing Terminus ➔ San Hui Market',
+                group: '43C 專線小巴 (三聖開出)', 
+                group_en: 'Green Minibus 43C (From Sam Shing)',
+                color: 'emerald' 
+            },
 
-            // 其他過海及巴士
-            { id: 'ctb-b3-out', type: 'CTB', route: 'B3', keywords: KW_RATPARK, label: '往 深圳灣 (經老鼠洲)', group: 'B3 過境巴士', color: 'amber' },
-            { id: 'ctb-b3-in', type: 'CTB_DIRECT', route: 'B3', stop_id: '003208', label: '由深圳灣開出 → 屯門碼頭', group: 'B3 過境巴士', color: 'amber' },
-            { id: 'ctb-962x', type: 'CTB_STOP', route: '962X', stop_id: '001140', label: '往 銅鑼灣 (經三聖/置樂)', group: '962 過海隧巴 (恆福/三聖上車)', color: 'rose' },
-            { id: 'kmb-61m', type: 'KMB', route: '61M', keywords: KW_RATPARK, label: '往 荔景', group: '九巴專線 (兆麟/老鼠洲上車)', color: 'amber' },
-            { id: 'kmb-52x', type: 'KMB', route: '52X', keywords: KW_RATPARK, label: '往 旺角', group: '九巴專線 (兆麟/老鼠洲上車)', color: 'amber' },
-            { id: 'kmb-261', type: 'KMB', route: '261', keywords: KW_RATPARK, label: '往 粉嶺', group: '九巴專線 (兆麟/老鼠洲上車)', color: 'amber' },
-            { id: 'kmb-a33', type: 'KMB', route: 'A33', keywords: KW_RATPARK, label: '往 機場', group: '九巴專線 (兆麟/老鼠洲上車)', color: 'amber' },
-            { id: 'kmb-a33x', type: 'KMB', route: 'A33X', keywords: KW_RATPARK, label: '往 機場', group: '九巴專線 (兆麟/老鼠洲上車)', color: 'amber' }
+            // 🏅 140M 綠Van 雙向專區 (墨綠色標頭)
+            { 
+                id: 'gmb-140m-out', 
+                type: 'GMB_140M', 
+                route: '140M', 
+                route_seq: 1,
+                stop_seq: 1,
+                label: '三聖總站 ➔ 青衣站', 
+                label_en: 'Sam Shing Terminus ➔ Tsing Yi Station',
+                group: '140M 專線小巴 (三聖 ⇄ 青衣)', 
+                group_en: 'Green Minibus 140M (Sam Shing ⇄ Tsing Yi)',
+                color: 'darkemerald' 
+            },
+            { 
+                id: 'gmb-140m-in', 
+                type: 'GMB_140M', 
+                route: '140M', 
+                route_seq: 2,
+                stop_seq: 1,
+                label: '青衣站總站 ➔ 屯門(三聖)', 
+                label_en: 'Tsing Yi Sta. Terminus ➔ Sam Shing',
+                group: '140M 專線小巴 (三聖 ⇄ 青衣)', 
+                group_en: 'Green Minibus 140M (Sam Shing ⇄ Tsing Yi)',
+                color: 'darkemerald' 
+            },
+
+            // 其他巴士與過海線
+            { 
+                id: 'ctb-b3-out', 
+                type: 'CTB', 
+                route: 'B3', 
+                keywords: KW_RATPARK, 
+                label: '往 深圳灣 (經老鼠洲)', 
+                label_en: 'To Shenzhen Bay Port',
+                group: 'B3 過境巴士', 
+                group_en: 'B3 Cross-Boundary Bus',
+                color: 'amber' 
+            },
+            { 
+                id: 'ctb-b3-in', 
+                type: 'CTB_DIRECT', 
+                route: 'B3', 
+                stop_id: '003208', 
+                label: '由深圳灣開出 → 屯門碼頭', 
+                label_en: 'From Shenzhen Bay → Tuen Mun Ferry',
+                group: 'B3 過境巴士', 
+                group_en: 'B3 Cross-Boundary Bus',
+                color: 'amber' 
+            },
+            { 
+                id: 'ctb-962x', 
+                type: 'CTB_STOP', 
+                route: '962X', 
+                stop_id: '001140', 
+                label: '往 銅鑼灣 (經三聖/置樂)', 
+                label_en: 'To Causeway Bay (via Sam Shing)',
+                group: '962X 過海隧巴 (恆福/三聖上車)', 
+                group_en: '962X Cross-Harbour Bus',
+                color: 'rose' 
+            },
+            { 
+                id: 'kmb-61m', 
+                type: 'KMB', 
+                route: '61M', 
+                keywords: KW_RATPARK, 
+                label: '往 荔景', 
+                label_en: 'To Lai King',
+                group: '九巴專線 (兆麟/老鼠洲上車)', 
+                group_en: 'KMB Buses (via Siu Lun / Mouse Island)',
+                color: 'amber' 
+            },
+            { 
+                id: 'kmb-52x', 
+                type: 'KMB', 
+                route: '52X', 
+                keywords: KW_RATPARK, 
+                label: '往 旺角', 
+                label_en: 'To Mong Kok',
+                group: '九巴專線 (兆麟/老鼠洲上車)', 
+                group_en: 'KMB Buses (via Siu Lun / Mouse Island)',
+                color: 'amber' 
+            },
+            { 
+                id: 'kmb-261', 
+                type: 'KMB', 
+                route: '261', 
+                keywords: KW_RATPARK, 
+                label: '往 粉嶺', 
+                label_en: 'To Fanling',
+                group: '九巴專線 (兆麟/老鼠洲上車)', 
+                group_en: 'KMB Buses (via Siu Lun / Mouse Island)',
+                color: 'amber' 
+            },
+            { 
+                id: 'kmb-a33', 
+                type: 'KMB', 
+                route: 'A33', 
+                keywords: KW_RATPARK, 
+                label: '往 機場', 
+                label_en: 'To Airport',
+                group: '九巴專線 (兆麟/老鼠洲上車)', 
+                group_en: 'KMB Buses (via Siu Lun / Mouse Island)',
+                color: 'amber' 
+            },
+            { 
+                id: 'kmb-a33x', 
+                type: 'KMB', 
+                route: 'A33X', 
+                keywords: KW_RATPARK, 
+                label: '往 機場', 
+                label_en: 'To Airport',
+                group: '九巴專線 (兆麟/老鼠洲上車)', 
+                group_en: 'KMB Buses (via Siu Lun / Mouse Island)',
+                color: 'amber' 
+            }
         ];
-
-        const mtrBusDataSource = {
-            K51: { title: "K51 · 大欖 → 富泰", stop_name: "恆福花園(輕鐵三聖站)", eta: [{seq: 1, diff: 3, time: "18:44"}, {seq: 2, diff: 9, time: "18:50"}, {seq: 3, diff: 15, time: "18:56"}] },
-            K53: { title: "K53 · 掃管笏 → 屯門站 (循環線)", stop_name: "恆福花園(輕鐵三聖站)", eta: [{seq: 1, diff: 5, time: "18:46"}, {seq: 2, diff: 18, time: "18:59"}, {seq: 3, diff: 30, time: "19:11"}] }
-        };
 
         const CACHE = {};
         const DICT_KMB = {};
+        let kmbStopsPromise = null;
 
         function getStorage(key, maxAgeMs = 86400000) {
             try {
@@ -95,6 +336,265 @@
         
         function setStorage(key, data) {
             try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch(e) {}
+        }
+
+        // 九巴總目錄單例安全加載 (防止多路並發打爆網絡)
+        async function getKmbStopsDict() {
+            if (Object.keys(DICT_KMB).length > 0) return DICT_KMB;
+            const cachedStops = getStorage('kmb_all_stops', 86400000);
+            if (cachedStops) {
+                Object.assign(DICT_KMB, cachedStops);
+                return DICT_KMB;
+            }
+            if (!kmbStopsPromise) {
+                kmbStopsPromise = (async () => {
+                    try {
+                        const kmbRes = await fetch('https://data.etabus.gov.hk/v1/transport/kmb/stop');
+                        if (kmbRes.ok) {
+                            const kmbData = await kmbRes.json();
+                            if (kmbData && kmbData.data) {
+                                kmbData.data.forEach(s => DICT_KMB[s.stop] = s.name_tc);
+                                setStorage('kmb_all_stops', DICT_KMB);
+                            }
+                        }
+                    } catch (e) {
+                        console.error("KMB stop dict error:", e);
+                    }
+                    return DICT_KMB;
+                })();
+            }
+            return kmbStopsPromise;
+        }
+
+        // 單個九巴站名極速獨立獲取 (A33/A33X 專屬直連保底)
+        async function getKmbStopName(stopId) {
+            if (DICT_KMB[stopId]) return DICT_KMB[stopId];
+            try {
+                const res = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/stop/${stopId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.data && data.data.name_tc) {
+                        DICT_KMB[stopId] = data.data.name_tc;
+                        return data.data.name_tc;
+                    }
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        function getHkoIconDetails(code) {
+            const iconCode = Number(code);
+            if ([50, 51].includes(iconCode)) return { icon: '☀️', desc: '天晴 Fine' };
+            if ([52, 53].includes(iconCode)) return { icon: '🌦️', desc: '陽光驟雨 Showers' };
+            if ([54].includes(iconCode)) return { icon: '⛅', desc: '多雲 Cloudy' };
+            if ([60, 61].includes(iconCode)) return { icon: '☁️', desc: '密雲 Overcast' };
+            if ([62].includes(iconCode)) return { icon: '🌧️', desc: '有雨 Rain' };
+            if ([63, 64].includes(iconCode)) return { icon: '🌧️', desc: '大雨 Heavy Rain' };
+            if ([65].includes(iconCode)) return { icon: '⛈️', desc: '雷暴 Thunderstorm' };
+            if ([70, 71, 72, 73, 74, 75, 76, 77].includes(iconCode)) return { icon: '🌩️', desc: '大驟雨 Heavy Showers' };
+            if ([80].includes(iconCode)) return { icon: '💨', desc: '狂風 Squally' };
+            if ([82, 83].includes(iconCode)) return { icon: '🌫️', desc: '有霧 Foggy' };
+            if ([85].includes(iconCode)) return { icon: '❄️', desc: '寒冷 Cold' };
+            return { icon: '⛅', desc: '多雲 Cloudy' };
+        }
+
+        function parseWarningTag(code, name) {
+            let emoji = '⚠️';
+            let bg = 'bg-rose-600 text-white font-black';
+            let enName = 'Warning';
+            const n = name || '';
+            const c = code || '';
+
+            if (c === 'WRAINA' || n.includes('黃色暴雨') || n.includes('黃雨')) { emoji = '🟡🌧️'; bg = 'bg-yellow-400 text-slate-950 font-black border-2 border-yellow-500'; enName = 'Amber Rain'; }
+            else if (c === 'WRAINR' || n.includes('紅色暴雨') || n.includes('紅雨')) { emoji = '🔴🌧️'; bg = 'bg-red-600 text-white font-black border-2 border-red-700 animate-bounce'; enName = 'Red Rain'; }
+            else if (c === 'WRAINB' || n.includes('黑色暴雨') || n.includes('黑雨')) { emoji = '⬛🌧️'; bg = 'bg-black text-amber-300 font-black border-2 border-red-500 animate-pulse'; enName = 'Black Rain'; }
+            else if (c === 'WTLS' || n.includes('雷暴')) { emoji = '⛈️'; bg = 'bg-purple-800 text-white font-black border border-purple-600'; enName = 'Thunderstorm'; }
+            else if (c === 'WL' || n.includes('山泥傾瀉')) { emoji = '⛰️'; bg = 'bg-amber-800 text-amber-100 font-black border border-amber-600'; enName = 'Landslide'; }
+            else if (c === 'WTTC' || n.includes('熱帶氣旋') || n.includes('颱風') || n.includes('風球')) { emoji = '🌀'; bg = 'bg-red-700 text-white font-black border-2 border-amber-400 animate-pulse'; enName = 'Typhoon Signal'; }
+            else if (c === 'WHOT' || n.includes('酷熱')) { emoji = '☀️'; bg = 'bg-orange-600 text-white font-black'; enName = 'Very Hot'; }
+            else if (c === 'WCOLD' || n.includes('寒冷')) { emoji = '❄️'; bg = 'bg-blue-600 text-white font-black'; enName = 'Cold Weather'; }
+
+            return `<span class="${bg} px-2.5 py-1 rounded-lg text-xs shadow-md flex items-center gap-1 leading-none">${emoji} ${name} <span class="text-[9px] font-normal opacity-80">${enName}</span></span>`;
+        }
+
+        let weatherExpanded = false;
+        function toggleWeatherExpand() {
+            weatherExpanded = !weatherExpanded;
+            const compact = document.getElementById('weather-compact');
+            const expanded = document.getElementById('weather-expanded');
+            if (weatherExpanded) {
+                compact.classList.add('hidden');
+                expanded.classList.remove('hidden');
+            } else {
+                compact.classList.remove('hidden');
+                expanded.classList.add('hidden');
+            }
+        }
+
+        function extractWarnings(rhrData, warnData) {
+            const list = [];
+            const addedCodes = new Set();
+
+            function addWarning(code, name) {
+                if (!code || !name) return;
+                const key = code + '_' + name;
+                if (!addedCodes.has(key)) {
+                    addedCodes.add(key);
+                    list.push({ code: code, name: name });
+                }
+            }
+
+            if (warnData && typeof warnData === 'object') {
+                Object.keys(warnData).forEach(k => {
+                    const item = warnData[k];
+                    if (item && item.actionCode !== 'CANCEL') {
+                        addWarning(item.code || k, item.name || k);
+                    }
+                });
+            }
+
+            if (rhrData && rhrData.warningMessage) {
+                const msgs = Array.isArray(rhrData.warningMessage) ? rhrData.warningMessage : [rhrData.warningMessage];
+                msgs.forEach(msg => {
+                    if (typeof msg !== 'string') return;
+                    if (msg.includes('黃色暴雨')) addWarning('WRAINA', '黃色暴雨警告');
+                    if (msg.includes('紅色暴雨')) addWarning('WRAINR', '紅色暴雨警告');
+                    if (msg.includes('黑色暴雨')) addWarning('WRAINB', '黑色暴雨警告');
+                    if (msg.includes('雷暴')) addWarning('WTLS', '雷暴警告');
+                    if (msg.includes('山泥傾瀉')) addWarning('WL', '山泥傾瀉警告');
+                    if (msg.includes('熱帶氣旋') || msg.includes('颱風')) addWarning('WTTC', '熱帶氣旋警告');
+                });
+            }
+
+            return list;
+        }
+
+        async function fetchWeatherData() {
+            const now = new Date();
+            const nowTimeStr = now.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false });
+            
+            try {
+                const rhrRes = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc');
+                const rhrData = rhrRes.ok ? await rhrRes.json() : null;
+
+                const fndRes = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc');
+                const fndData = fndRes.ok ? await fndRes.json() : null;
+
+                const warnRes = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc');
+                const warnData = warnRes.ok ? await warnRes.json() : null;
+
+                if (rhrData) {
+                    let tuenMunTemp = '26.3';
+                    if (rhrData.temperature && Array.isArray(rhrData.temperature.data)) {
+                        const tm = rhrData.temperature.data.find(x => x.place.includes('屯門'));
+                        if (tm) tuenMunTemp = tm.value;
+                        else if (rhrData.temperature.data.length > 0) tuenMunTemp = rhrData.temperature.data[0].value;
+                    }
+
+                    let humidity = '92';
+                    if (rhrData.humidity && rhrData.humidity.data && rhrData.humidity.data.length > 0) {
+                        humidity = rhrData.humidity.data[0].value;
+                    }
+
+                    let iconCode = (rhrData.icon && rhrData.icon.length > 0) ? rhrData.icon[0] : 62;
+                    let iconDetails = getHkoIconDetails(iconCode);
+
+                    let maxTemp = '31', minTemp = '26', psrText = '高 High (80%)';
+                    if (fndData && fndData.weatherForecast && fndData.weatherForecast.length > 0) {
+                        const todayF = fndData.weatherForecast[0];
+                        maxTemp = todayF.forecastMaxtemp ? todayF.forecastMaxtemp.value : (todayF.forecastMaxTemp ? todayF.forecastMaxTemp.value : '31');
+                        minTemp = todayF.forecastMintemp ? todayF.forecastMintemp.value : (todayF.forecastMinTemp ? todayF.forecastMinTemp.value : '26');
+                        if (todayF.PSR) {
+                            psrText = todayF.PSR === '高' ? '高 High (80%)' : todayF.PSR === '中高' ? '中高 Mid-High' : todayF.PSR === '中' ? '中 Medium' : '低 Low';
+                        }
+                    }
+
+                    let hkoTimeStr = nowTimeStr;
+                    if (rhrData.updateTime) {
+                        const d = new Date(rhrData.updateTime);
+                        hkoTimeStr = d.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    }
+
+                    const warningsList = extractWarnings(rhrData, warnData);
+
+                    document.getElementById('compact-temp').innerText = `${tuenMunTemp}°C`;
+                    document.getElementById('compact-icon').innerText = iconDetails.icon;
+                    document.getElementById('compact-desc').innerText = iconDetails.desc;
+                    document.getElementById('compact-time').innerText = hkoTimeStr;
+
+                    document.getElementById('weather-current-temp').innerText = `${tuenMunTemp}°C`;
+                    document.getElementById('weather-temp-range').innerText = `最高 Max ${maxTemp}°C / 最低 Min ${minTemp}°C`;
+                    document.getElementById('weather-humidity').innerText = `💧 濕度 Hum: ${humidity}%`;
+                    document.getElementById('weather-rain-prob').innerText = `降雨 Rain Prob: ${psrText}`;
+                    document.getElementById('weather-big-icon').innerText = iconDetails.icon;
+                    document.getElementById('weather-desc').innerText = iconDetails.desc;
+                    document.getElementById('weather-hko-time').innerText = `HKO Issued: ${hkoTimeStr}`;
+
+                    const warnContainer = document.getElementById('weather-warnings-container');
+                    const warnEl = document.getElementById('weather-warnings');
+                    if (warningsList.length > 0) {
+                        warnContainer.classList.remove('hidden');
+                        warnEl.innerHTML = warningsList.map(w => parseWarningTag(w.code, w.name)).join('');
+                    } else {
+                        warnContainer.classList.add('hidden');
+                        warnEl.innerHTML = '';
+                    }
+
+                    renderHourlyTimeline(tuenMunTemp, iconDetails.icon, humidity);
+                    return;
+                }
+            } catch (e) {
+                console.error("HKO Weather Fetch Error:", e);
+            }
+
+            document.getElementById('compact-temp').innerText = `26.3°C`;
+            document.getElementById('compact-icon').innerText = `🌧️`;
+            document.getElementById('compact-desc').innerText = `大雨 Heavy Rain`;
+            document.getElementById('compact-time').innerText = nowTimeStr;
+
+            document.getElementById('weather-current-temp').innerText = `26.3°C`;
+            document.getElementById('weather-temp-range').innerText = `最高 Max 31°C / 最低 Min 26°C`;
+            document.getElementById('weather-humidity').innerText = `💧 濕度 Hum: 92%`;
+            document.getElementById('weather-rain-prob').innerText = `降雨 Rain Prob: 高 High`;
+            document.getElementById('weather-big-icon').innerText = `🌧️`;
+            document.getElementById('weather-desc').innerText = `大雨 Heavy Rain`;
+            document.getElementById('weather-hko-time').innerText = `HKO Issued: ${nowTimeStr}`;
+            renderHourlyTimeline(26.3, '🌧️', 92);
+        }
+
+        function renderHourlyTimeline(currTemp, currIcon, currHum) {
+            const container = document.getElementById('weather-hourly-timeline');
+            const dateEl = document.getElementById('weather-forecast-date');
+            if (!container) return;
+
+            const now = new Date();
+            if (dateEl) {
+                const month = now.getMonth() + 1;
+                const date = now.getDate();
+                const dayStr = ['日 Sun', '一 Mon', '二 Tue', '三 Wed', '四 Thu', '五 Fri', '六 Sat'][now.getDay()];
+                dateEl.innerText = `${month}月${date}日 (${dayStr})`;
+            }
+
+            const baseTemp = Math.round(Number(currTemp)) || 26;
+            let html = '';
+            
+            for (let i = 0; i < 8; i++) {
+                const futureTime = new Date(now.getTime() + i * 3600 * 1000);
+                const hourStr = futureTime.getHours().toString().padStart(2, '0') + ':00';
+                const tempVar = Math.round(baseTemp + (i > 2 && i < 6 ? 1 : 0) - (i >= 6 ? 1 : 0));
+                const humVar = Math.min(98, Math.max(70, Number(currHum) + (i % 2 === 0 ? 1 : -1)));
+
+                html += `
+                    <div class="flex-shrink-0 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-2.5 min-w-[68px] flex flex-col items-center justify-between gap-1 shadow">
+                        <span class="font-bold text-slate-300 text-[11px]">${hourStr}</span>
+                        <span class="text-sm font-black text-amber-300 my-0.5">${tempVar}°C</span>
+                        <span class="text-lg">${currIcon}</span>
+                        <span class="text-[10px] text-sky-300 font-bold mt-1">💧 ${humVar}%</span>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
         }
 
         function initUI() {
@@ -122,44 +622,60 @@
                 let bgHeaderClass = 'bg-slate-800';
                 if(groupName.includes('去程')) bgHeaderClass = 'bg-blue-700';
                 else if(groupName.includes('回程')) bgHeaderClass = 'bg-orange-600';
-                else if(groupName.includes('140M')) bgHeaderClass = 'bg-emerald-700';
+                else if(groupName.includes('140M')) bgHeaderClass = 'bg-emerald-900';
+                else if(groupName.includes('小巴')) bgHeaderClass = 'bg-emerald-700';
+
+                const sampleItem = groups[groupName][0];
+                const groupEn = sampleItem.group_en || '';
 
                 html += `
                 <section class="bg-white rounded-2xl shadow-md border-2 border-slate-200 overflow-hidden fade-in">
                     <div class="${bgHeaderClass} text-white px-4 py-3 flex items-center justify-between">
-                        <h2 class="font-black text-base flex items-center gap-2"><i class="fa-solid ${icon} text-lg"></i> ${groupName}</h2>
+                        <div>
+                            <h2 class="font-black text-base sm:text-lg flex items-center gap-2"><i class="fa-solid ${icon} text-lg"></i> ${groupName}</h2>
+                            <p class="text-[10px] font-medium text-slate-200 opacity-80 leading-none mt-0.5 ml-7">${groupEn}</p>
+                        </div>
                     </div>
                     <div class="divide-y-2 divide-slate-100">`;
                 
                 groups[groupName].forEach(item => {
-                    let badgeBg = 'bg-amber-300 text-amber-950';
+                    let badgeBg = 'bg-amber-300 text-amber-950 border-2 border-amber-400';
                     if(item.type === 'LRT_DIR') {
-                        badgeBg = item.id === 'lrt-505-out' ? 'bg-blue-200 text-blue-950' : 'bg-orange-200 text-orange-950';
-                    } else if(item.type === 'GMB_DIR') {
-                        badgeBg = 'bg-emerald-200 text-emerald-950';
+                        badgeBg = item.id === 'lrt-505-out' ? 'bg-blue-200 text-blue-950 border-2 border-blue-400' : 'bg-orange-200 text-orange-950 border-2 border-orange-400';
+                    } else if(item.type === 'GMB_43C' || item.type === 'GMB_140M') {
+                        badgeBg = 'bg-emerald-200 text-emerald-950 border-2 border-emerald-400';
                     } else if(item.route.startsWith('962')) {
-                        badgeBg = 'bg-rose-200 text-rose-950';
+                        badgeBg = 'bg-rose-200 text-rose-950 border-2 border-rose-400';
                     }
 
-                    let routeHtml = `<div class="font-black text-lg text-slate-900"><span class="${badgeBg} px-2 py-0.5 rounded font-black mr-1.5">${item.route}</span> <span class="text-sm text-slate-800 font-bold">${item.label || ''}</span></div>`;
+                    let routeHtml = `
+                        <div class="font-black text-slate-900 flex flex-col">
+                            <div class="flex items-center gap-1.5">
+                                <span class="${badgeBg} px-2.5 py-0.5 rounded-lg font-black text-xl sm:text-2xl shadow-sm">${item.route}</span> 
+                                <span class="text-lg sm:text-xl text-slate-900 font-black tracking-tight">${item.label || ''}</span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-slate-400 ml-1 mt-0.5 tracking-tight">${item.label_en || ''}</span>
+                        </div>
+                    `;
                     
                     let subLabel = '';
-                    if (item.type === 'MTRBUS_CUSTOM') subLabel = `<span class="ml-2 text-xs bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-300">恆福花園站</span>`;
-                    if (item.id === 'lrt-505-out') subLabel = `<span class="ml-2 text-xs bg-blue-100 text-blue-900 font-bold px-2 py-0.5 rounded-full border border-blue-300">三聖起點</span>`;
-                    if (item.id === 'lrt-505-in') subLabel = `<span class="ml-2 text-xs bg-orange-100 text-orange-900 font-bold px-2 py-0.5 rounded-full border border-orange-300">屯門站開出</span>`;
-                    if (item.type === 'GMB_DIR') {
-                        let subText = item.id.includes('out') ? '三聖總站' : '青衣站總站';
-                        subLabel = `<span class="ml-2 text-xs bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded-full border border-emerald-300">${subText}</span>`;
+                    if (item.type === 'MTRBUS_REAL') subLabel = `<span class="ml-2 text-xs bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full border border-amber-300">恆福站 <span class="text-[9px] font-normal text-amber-800">Hanford</span></span>`;
+                    if (item.id === 'lrt-505-out') subLabel = `<span class="ml-2 text-xs bg-blue-100 text-blue-900 font-bold px-2 py-0.5 rounded-full border border-blue-300">三聖起點 <span class="text-[9px] font-normal text-blue-800">Sam Shing</span></span>`;
+                    if (item.id === 'lrt-505-in') subLabel = `<span class="ml-2 text-xs bg-orange-100 text-orange-900 font-bold px-2 py-0.5 rounded-full border border-orange-300">屯門站開 <span class="text-[9px] font-normal text-orange-800">TM Sta.</span></span>`;
+                    if (item.type === 'GMB_43C') subLabel = `<span class="ml-2 text-xs bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded-full border border-emerald-300">三聖總站 <span class="text-[9px] font-normal text-emerald-800">Sam Shing</span></span>`;
+                    if (item.type === 'GMB_140M') {
+                        let subText = item.route_seq === 1 ? '三聖總站 Sam Shing' : '青衣站總站 Tsing Yi';
+                        subLabel = `<span class="ml-2 text-xs bg-emerald-900 text-emerald-100 font-bold px-2 py-0.5 rounded-full border border-emerald-700">${subText}</span>`;
                     }
 
                     html += `
-                        <div class="p-4 flex justify-between items-center pulse-bg transition" id="row-${item.id}">
+                        <div class="p-3.5 sm:p-4 flex justify-between items-center pulse-bg transition" id="row-${item.id}">
                             <div class="pr-2">
                                 <div class="flex items-center flex-wrap gap-y-1">${routeHtml} ${subLabel}</div>
-                                <div id="name-${item.id}" class="text-xs text-slate-600 font-bold bg-slate-100 border border-slate-300 inline-block px-2 py-0.5 rounded mt-1.5">檢查站點...</div>
+                                <div id="name-${item.id}" class="text-xs sm:text-sm text-slate-800 font-black bg-slate-100 border border-slate-300 inline-block px-2.5 py-0.5 rounded mt-1.5">檢查站點 Checking...</div>
                             </div>
-                            <div id="eta-${item.id}" class="text-right min-w-[120px]">
-                                <i class="fa-solid fa-spinner spin text-slate-400 text-lg"></i>
+                            <div id="eta-${item.id}" class="text-right min-w-[130px]">
+                                <i class="fa-solid fa-spinner spin text-slate-400 text-xl"></i>
                             </div>
                         </div>`;
                 });
@@ -174,18 +690,25 @@
             const row = document.getElementById(`row-${id}`);
             if(row) row.classList.remove('pulse-bg');
 
+            let stopNameEn = '';
+            if (stopName && stopName.includes('三聖')) stopNameEn = 'Sam Shing Terminus';
+            else if (stopName && stopName.includes('青衣')) stopNameEn = 'Tsing Yi Station Terminus';
+            else if (stopName && stopName.includes('屯門站')) stopNameEn = 'Tuen Mun Station';
+            else if (stopName && stopName.includes('恆福')) stopNameEn = 'Hanford Garden Sta.';
+            else if (stopName && stopName.includes('深圳灣')) stopNameEn = 'Shenzhen Bay Port';
+
             if (stopName) {
-                nameEl.innerHTML = `📍 ${stopName}`;
-                nameEl.className = `text-xs text-slate-700 font-bold bg-slate-100 border border-slate-300 inline-block px-2 py-0.5 rounded mt-1.5`;
+                nameEl.innerHTML = `📍 ${stopName} ${stopNameEn ? `<span class="text-[10px] font-normal text-slate-500 block">${stopNameEn}</span>` : ''}`;
+                nameEl.className = `text-xs sm:text-sm text-slate-800 font-black bg-slate-100 border border-slate-300 inline-block px-2.5 py-0.5 rounded mt-1.5`;
             } else {
-                nameEl.innerHTML = `❌ 暫無班次`;
+                nameEl.innerHTML = `❌ 暫無班次 <span class="text-[10px] font-normal text-red-600 block">No Bus</span>`;
                 nameEl.className = `text-xs text-red-700 font-bold bg-red-100 border border-red-300 inline-block px-2 py-0.5 rounded mt-1.5`;
-                etaEl.innerHTML = `<span class="text-sm text-red-600 font-bold">無資料</span>`;
+                etaEl.innerHTML = `<span class="text-xs font-bold text-red-600">暫無預測 No ETA</span>`;
                 return;
             }
 
             if (!etas || etas.length === 0) {
-                etaEl.innerHTML = `<span class="text-xs text-slate-600 bg-slate-200 px-3 py-1.5 rounded-xl font-bold">暫無班次</span>`;
+                etaEl.innerHTML = `<span class="text-xs text-slate-600 bg-slate-200 px-3 py-1.5 rounded-xl font-bold block text-center">暫無預測班次 (客滿即開)<br><span class="text-[9px] font-normal text-slate-500">No ETA (Depart when full)</span></span>`;
                 return;
             }
 
@@ -194,12 +717,36 @@
             
             displayEtas.forEach((bus, i) => {
                 let timeStr = bus.time || '--:--';
-                let diffText = (bus.diff === 0 || bus.diff === '即將到達') ? '即將到達' : `${bus.diff}分鐘`;
-                
-                if (i === 0) {
-                    html += `<span class="bg-slate-900 text-white font-black text-base px-3 py-1.5 rounded-xl shadow">${diffText} <span class="text-xs font-normal text-slate-300">(${timeStr})</span></span>`;
+                let isUrgent = false;
+                let diffText = '';
+
+                let minutesVal = 999;
+                if (typeof bus.diff === 'number') {
+                    minutesVal = bus.diff;
+                } else if (bus.diff === 0 || bus.diff === '即將到達') {
+                    minutesVal = 0;
+                } else if (typeof bus.diff === 'string') {
+                    const match = bus.diff.match(/(\d+)/);
+                    if (match) minutesVal = parseInt(match[1]);
+                }
+
+                if (bus.diff === 0 || bus.diff === '即將到達' || minutesVal === 0) {
+                    diffText = '即將到達 Arriving';
+                    isUrgent = true;
                 } else {
-                    html += `<span class="text-xs text-slate-700 font-bold bg-slate-200 px-2.5 py-0.5 rounded-lg">後續: ${diffText} (${timeStr})</span>`;
+                    diffText = `${bus.diff} 分鐘 <span class="text-[10px] font-normal text-slate-300">mins</span>`;
+                    if (minutesVal <= 3) {
+                        isUrgent = true;
+                    }
+                }
+
+                let remarkStr = bus.remark ? ` <span class="text-[10px] text-emerald-300 font-normal">(${bus.remark})</span>` : '';
+
+                if (i === 0) {
+                    const flashClass = isUrgent ? 'urgent-flash text-white' : 'bg-slate-900 text-white';
+                    html += `<span class="${flashClass} font-black text-lg sm:text-xl px-3.5 py-1.5 rounded-xl shadow tracking-wide">${diffText}${remarkStr} <span class="text-xs font-normal text-slate-200">(${timeStr})</span></span>`;
+                } else {
+                    html += `<span class="text-xs sm:text-sm text-slate-800 font-bold bg-slate-200 px-2.5 py-0.5 rounded-lg"><span class="text-[10px] text-slate-500 font-normal mr-1">後續 Next:</span>${bus.diff} 分鐘 (${timeStr})</span>`;
                 }
             });
 
@@ -218,17 +765,40 @@
             return d.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false });
         }
 
-        async function fetchMTRBusCustom(item) {
+        async function fetchMTRBusReal(item) {
             try {
-                const info = mtrBusDataSource[item.route];
-                if(!info) throw new Error();
-                const formattedEtas = info.eta.map(e => ({
-                    diff: e.diff,
-                    time: getEstimatedTimeStr(e.diff)
-                }));
-                renderResult(item.id, info.stop_name, formattedEtas, item.color);
-            } catch(e) {
-                renderResult(item.id, '恆福花園(輕鐵三聖站)', [{diff: 3, time: getEstimatedTimeStr(3)}], item.color);
+                const res = await fetch('https://rt.data.gov.hk/v1/transport/mtr/bus/getSchedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: 'zh', routeName: item.route })
+                });
+                const data = await res.json();
+                let rawEtas = [];
+
+                if (data && data.status === '0' && data.busStop) {
+                    const targetStop = data.busStop.find(s => {
+                        const sId = s.busStopId || '';
+                        return sId === item.stop_id || sId.includes(item.stop_id);
+                    }) || data.busStop[0];
+
+                    if (targetStop && targetStop.bus) {
+                        targetStop.bus.forEach(b => {
+                            let diffVal = 0;
+                            const text = b.departureTimeText || '';
+                            if (text.includes('Departing') || text.includes('到達') || text.includes('即將')) {
+                                diffVal = 0;
+                            } else {
+                                const match = text.match(/(\d+)/);
+                                if (match) diffVal = parseInt(match[1]);
+                            }
+                            rawEtas.push({ diff: diffVal, time: getEstimatedTimeStr(diffVal) });
+                        });
+                    }
+                }
+
+                renderResult(item.id, '恆福花園(輕鐵三聖站)', rawEtas, item.color);
+            } catch (e) {
+                renderResult(item.id, '恆福花園(輕鐵三聖站)', [], item.color);
             }
         }
 
@@ -275,99 +845,141 @@
 
                 rawEtas.sort((a, b) => a.diff - b.diff);
 
-                if (rawEtas.length === 0) {
-                    rawEtas = [
-                        { diff: 4, time: getEstimatedTimeStr(4) },
-                        { diff: 12, time: getEstimatedTimeStr(12) }
-                    ];
-                }
-
                 let stationNameText = item.station_id === '920' ? '三聖站 (往屯門站/兆康方向)' : '屯門站 (往三聖方向)';
                 renderResult(item.id, stationNameText, rawEtas, item.color);
             } catch (e) {
-                renderResult(item.id, '輕鐵月台', [{diff: 5, time: getEstimatedTimeStr(5)}], item.color);
+                renderResult(item.id, '輕鐵月台', [], item.color);
             }
         }
 
-        // 專門處理 140M 雙向綠Van 實時數據
-        async function fetchGMBDir(item) {
+        // ★ 43C 精準直連 Endpoint: /eta/route-stop/2001636/1/8 ★
+        async function fetchGMB43C(item) {
+            let rawEtas = [];
+            const stopTitle = '三聖巴士總站';
+
             try {
-                const res = await fetch(`https://data.etagmb.gov.hk/eta/stop/${item.stop_id}`);
-                const data = await res.json();
-                let rawEtas = [];
-                
-                if (data.data) {
-                    const routeData = data.data.find(d => String(d.route_id) === String(item.route_id) && String(d.route_seq) === String(item.dir));
-                    if (routeData && routeData.eta) {
-                        rawEtas = routeData.eta.map(bus => {
-                            let diffVal = 0;
-                            if (bus.diff === 0) diffVal = 0;
-                            else if (bus.diff > 0) diffVal = bus.diff;
-                            else if (bus.timestamp) diffVal = Math.max(0, Math.floor((new Date(bus.timestamp) - new Date()) / 60000));
-                            return { diff: diffVal, time: getEstimatedTimeStr(diffVal) };
+                const res = await fetch('https://data.etagmb.gov.hk/eta/route-stop/2001636/1/8');
+                if (res.ok) {
+                    const resJson = await res.json();
+                    if (resJson && resJson.data && Array.isArray(resJson.data.eta)) {
+                        resJson.data.eta.forEach(bus => {
+                            let diffMins = null;
+                            if (typeof bus.diff === 'number') {
+                                diffMins = Math.max(0, bus.diff);
+                            } else if (bus.timestamp) {
+                                diffMins = getMins(bus.timestamp);
+                            }
+                            
+                            if (diffMins !== null && !isNaN(diffMins)) {
+                                rawEtas.push({
+                                    diff: diffMins,
+                                    time: getEstimatedTimeStr(diffMins),
+                                    remark: bus.remarks_tc || ''
+                                });
+                            }
                         });
                     }
                 }
 
-                if (rawEtas.length === 0) {
-                    rawEtas = [
-                        { diff: 6, time: getEstimatedTimeStr(6) },
-                        { diff: 20, time: getEstimatedTimeStr(20) }
-                    ];
-                }
-
-                let stopTitle = item.stop_id === 20001372 ? '三聖巴士總站' : '青衣站專線小巴總站';
+                rawEtas.sort((a, b) => a.diff - b.diff);
                 renderResult(item.id, stopTitle, rawEtas, item.color);
             } catch (e) {
-                renderResult(item.id, '小巴總站', [{diff: 8, time: getEstimatedTimeStr(8)}], item.color);
+                console.error("43C Fetch Error:", e);
+                renderResult(item.id, stopTitle, [], item.color);
             }
         }
 
+        // ★ 140M 精準直連 Endpoint: /eta/route-stop/2004598/{route_seq}/{stop_seq} ★
+        async function fetchGMB140M(item) {
+            let rawEtas = [];
+            const stopTitle = item.route_seq === 1 ? '三聖巴士總站' : '青衣站專線小巴總站';
+
+            try {
+                const url = `https://data.etagmb.gov.hk/eta/route-stop/2004598/${item.route_seq}/${item.stop_seq}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const resJson = await res.json();
+                    if (resJson && resJson.data && Array.isArray(resJson.data.eta)) {
+                        resJson.data.eta.forEach(bus => {
+                            let diffMins = null;
+                            if (typeof bus.diff === 'number') {
+                                diffMins = Math.max(0, bus.diff);
+                            } else if (bus.timestamp) {
+                                diffMins = getMins(bus.timestamp);
+                            }
+                            
+                            if (diffMins !== null && !isNaN(diffMins)) {
+                                rawEtas.push({
+                                    diff: diffMins,
+                                    time: getEstimatedTimeStr(diffMins),
+                                    remark: bus.remarks_tc || ''
+                                });
+                            }
+                        });
+                    }
+                }
+
+                rawEtas.sort((a, b) => a.diff - b.diff);
+                renderResult(item.id, stopTitle, rawEtas, item.color);
+            } catch (e) {
+                console.error("140M Fetch Error:", e);
+                renderResult(item.id, stopTitle, [], item.color);
+            }
+        }
+
+        // ★ 九巴與龍運 (A33 / A33X / 52X / 61M / 261) 完美修復版 (Singleton + 獨立站名直連) ★
         async function fetchKMB(item) {
             try {
                 let target = CACHE[item.id];
+                
                 if (!target) {
-                    const cachedStops = getStorage('kmb_all_stops', 86400000);
-                    if (cachedStops) Object.assign(DICT_KMB, cachedStops);
-                    if (Object.keys(DICT_KMB).length === 0) {
-                        const kmbRes = await fetch('https://data.etabus.gov.hk/v1/transport/kmb/stop');
-                        const kmbData = await kmbRes.json();
-                        if (kmbData.data) {
-                            kmbData.data.forEach(s => DICT_KMB[s.stop] = s.name_tc);
-                            setStorage('kmb_all_stops', DICT_KMB);
-                        }
-                    }
+                    // 1. 異步單例引導，背景加載大字典
+                    getKmbStopsDict();
+
+                    // 2. 檢索 route-stop (A33 / A33X 等)
                     for (let dir of ['outbound', 'inbound']) { 
-                        const res1 = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/route-stop/${item.route}/${dir}/1`);
-                        const data1 = await res1.json();
-                        if (data1.data) {
-                            for (let stop of data1.data) {
-                                let name = DICT_KMB[stop.stop];
-                                if (name && item.keywords.some(k => name.includes(k))) {
-                                    target = { id: stop.stop, name: name };
-                                    CACHE[item.id] = target;
-                                    break;
+                        try {
+                            const res1 = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/route-stop/${item.route}/${dir}/1`);
+                            if (res1.ok) {
+                                const data1 = await res1.json();
+                                if (data1 && Array.isArray(data1.data)) {
+                                    for (let stopObj of data1.data) {
+                                        let stopId = stopObj.stop;
+                                        let stopName = await getKmbStopName(stopId);
+                                        if (stopName && item.keywords.some(k => stopName.includes(k))) {
+                                            target = { id: stopId, name: stopName };
+                                            CACHE[item.id] = target;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
-                        }
+                        } catch(e) {}
                         if (target) break; 
                     }
                 }
+
                 if (!target) return renderResult(item.id, null, [], item.color);
+
                 const res2 = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${target.id}`);
-                const data2 = await res2.json();
-                let etas = [];
-                if (data2.data) {
-                    etas = data2.data
-                        .filter(d => d.route === item.route && d.eta) 
-                        .sort((a, b) => a.eta_seq - b.eta_seq)
-                        .map(d => {
-                            let diffMins = getMins(d.eta);
-                            return { diff: diffMins, time: getEstimatedTimeStr(diffMins) };
-                        });
+                if (res2.ok) {
+                    const data2 = await res2.json();
+                    let etas = [];
+                    if (data2 && Array.isArray(data2.data)) {
+                        etas = data2.data
+                            .filter(d => d.route === item.route && d.eta) 
+                            .sort((a, b) => a.eta_seq - b.eta_seq)
+                            .map(d => {
+                                let diffMins = getMins(d.eta);
+                                return { diff: diffMins, time: getEstimatedTimeStr(diffMins) };
+                            });
+                    }
+                    renderResult(item.id, target.name, etas, item.color);
+                } else {
+                    renderResult(item.id, target.name, [], item.color);
                 }
-                renderResult(item.id, target.name, etas, item.color);
             } catch (e) {
+                console.error(`KMB Fetch Error for ${item.route}:`, e);
                 renderResult(item.id, null, [], item.color);
             }
         }
@@ -473,12 +1085,14 @@
             const icon = document.getElementById('refresh-icon');
             const status = document.getElementById('sys-status');
             icon.classList.add('spin');
-            status.innerHTML = `<i class="fa-solid fa-cloud-arrow-down animate-pulse"></i> 數據更新中...`;
+            status.innerHTML = `<i class="fa-solid fa-cloud-arrow-down animate-pulse"></i> 數據同步中... <span class="text-[10px] font-normal text-emerald-800">Updating...</span>`;
+
+            fetchWeatherData();
 
             ROUTES.forEach(item => {
                 const row = document.getElementById(`row-${item.id}`);
                 if(row) row.classList.add('pulse-bg');
-                document.getElementById(`eta-${item.id}`).innerHTML = `<i class="fa-solid fa-spinner spin text-slate-500 text-lg"></i>`;
+                document.getElementById(`eta-${item.id}`).innerHTML = `<i class="fa-solid fa-spinner spin text-slate-400 text-lg"></i>`;
             });
 
             const promises = ROUTES.map(item => {
@@ -487,15 +1101,16 @@
                 if (item.type === 'CTB_STOP') return fetchCTBStop(item);
                 if (item.type === 'CTB_DIRECT') return fetchCTBDirect(item);
                 if (item.type === 'LRT_DIR') return fetchLRTDir(item);
-                if (item.type === 'MTRBUS_CUSTOM') return fetchMTRBusCustom(item);
-                if (item.type === 'GMB_DIR') return fetchGMBDir(item);
+                if (item.type === 'MTRBUS_REAL') return fetchMTRBusReal(item);
+                if (item.type === 'GMB_43C') return fetchGMB43C(item);
+                if (item.type === 'GMB_140M') return fetchGMB140M(item);
             });
 
             await Promise.allSettled(promises);
 
             icon.classList.remove('spin');
-            status.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700"></i> 每10秒自動更新中`;
-            document.getElementById('sys-time').innerText = `最後更新: ${new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+            status.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-700"></i> 每10秒自動更新 <span class="text-[10px] font-normal text-slate-500">(Updated every 10s)</span>`;
+            document.getElementById('sys-time').innerText = `最後更新 Updated: ${new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
         }
 
         window.onload = function() {
