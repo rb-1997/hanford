@@ -672,7 +672,8 @@
         const SUBAPP_ROUTES_DATA = {
             '44': {
                 id: '44',
-                routeId: 2000131,
+                routeId: 2003966,
+                etaRouteSeq: { outbound: 1, inbound: 2 },
                 title: '44',
                 badgeBg: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-400',
                 viaYauOiOutbound: true,
@@ -685,14 +686,18 @@
                     defaultStopSeq: 1,
                     stops: [
                         { seq: 1, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🚌' },
-                        { seq: 2, name: '湖翠路 (邁亞美海灣)', eng: 'Wu Chui Rd', icon: '🏠' },
-                        { seq: 3, name: '龍門路 (新屯門中心)', eng: 'Lung Mun Rd', icon: '🏘️' },
-                        { seq: 4, name: '龍門路 (兆山苑)', eng: 'Siu Shan Court', icon: '🏫' },
-                        { seq: 5, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
-                        { seq: 6, name: '友愛邨 (屯門鄉事會路)', eng: 'Yau Oi Estate', icon: '❤️' },
-                        { seq: 7, name: '屯門市中心', eng: 'Tuen Mun Town Ctr', icon: '🏢' },
-                        { seq: 8, name: '屯門公路 (紅橋)', eng: 'Hung Kiu', icon: '🌉' },
-                        { seq: 9, name: '上水站總站', eng: 'Sheung Shui Sta.', icon: '🎯' }
+                        { seq: 2, name: '湖翠路 (邁亞美海灣)', eng: 'Miami Beach Towers', icon: '🏠' },
+                        { seq: 3, name: '湖翠路 (海翠花園)', eng: 'Hoi Tsui Garden', icon: '🏠' },
+                        { seq: 4, name: '湖翠路 (美樂花園)', eng: 'Melody Garden', icon: '🏠' },
+                        { seq: 5, name: '龍門路 (蝴蝶輕鐵站)', eng: 'Butterfly Stop', icon: '🏘️' },
+                        { seq: 6, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
+                        { seq: 7, name: '龍門路 (龍門輕鐵站)', eng: 'Lung Mun Stop', icon: '🏘️' },
+                        { seq: 8, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
+                        { seq: 9, name: '海珠路 (翠寧花園)', eng: 'Tsui Ning Garden', icon: '🏘️' },
+                        { seq: 10, name: '友愛邨 (屯門鄉事會路)', eng: 'Yau Oi Estate', icon: '❤️' },
+                        { seq: 11, name: '屯門市中心 (輕鐵站)', eng: 'Town Centre', icon: '🏢' },
+                        { seq: 12, name: '紅橋 (新和里遊樂場)', eng: 'Hung Kiu', icon: '🌉' },
+                        { seq: 13, name: '上水站總站', eng: 'Sheung Shui Sta.', icon: '🎯' }
                     ]
                 },
                 inbound: {
@@ -701,20 +706,28 @@
                     defaultStopSeq: 1,
                     stops: [
                         { seq: 1, name: '上水站總站', eng: 'Sheung Shui Sta.', icon: '🚌' },
-                        { seq: 2, name: '粉嶺公路', eng: 'Fanling Highway', icon: '🛣️' },
-                        { seq: 3, name: '屯門公路 (紅橋)', eng: 'Hung Kiu', icon: '🌉' },
-                        { seq: 4, name: '屯門市中心', eng: 'Tuen Mun Town Ctr', icon: '🏢' },
-                        { seq: 5, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '🏘️' },
-                        { seq: 6, name: '兆麟苑 (海珠路)', eng: 'Siu Lun Court', icon: '🏘️' },
-                        { seq: 7, name: '豐景園', eng: 'Goodview Garden', icon: '🏘️' },
-                        { seq: 8, name: '龍門路 (新屯門中心)', eng: 'Lung Mun Rd', icon: '🏫' },
-                        { seq: 9, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🎯' }
+                        { seq: 2, name: '紅橋 (新和里遊樂場)', eng: 'Hung Kiu', icon: '🌉' },
+                        { seq: 3, name: '屯門市中心 (巴士總站)', eng: 'Tuen Mun Town Centre', icon: '🏢' },
+                        { seq: 4, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '❤️' },
+                        { seq: 5, name: '兆麟苑 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
+                        { seq: 6, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
+                        { seq: 7, name: '皇珠路 (龍逸邨)', eng: 'Lung Yat Estate', icon: '🏘️' },
+                        { seq: 8, name: '龍門路 (富健花園)', eng: 'Glorious Garden', icon: '🏘️' },
+                        { seq: 9, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
+                        { seq: 10, name: '龍門路 (蝴蝶邨蝶影樓)', eng: 'Butterfly Estate', icon: '🏘️' },
+                        { seq: 11, name: '湖翠路 (蝴蝶邨)', eng: 'Butterfly Estate', icon: '🏠' },
+                        { seq: 12, name: '湖翠路 (湖景邨)', eng: 'Wu King Estate', icon: '🏠' },
+                        { seq: 13, name: '湖翠路 (兆禧苑)', eng: 'Siu Hei Court', icon: '🏠' },
+                        { seq: 14, name: '湖翠路 (劉德容小學)', eng: 'Lau Tak Yung Memorial School', icon: '🏠' },
+                        { seq: 15, name: '湖翠路 (嘉智中學)', eng: 'Wu Chui Rd', icon: '🏠' },
+                        { seq: 16, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🎯' }
                     ]
                 }
             },
             '44B': {
                 id: '44B',
-                routeId: 2000132,
+                routeId: 2004164,
+                etaRouteSeq: { outbound: 2, inbound: 1 },
                 title: '44B',
                 badgeBg: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-400',
                 viaYauOiOutbound: false,
@@ -727,10 +740,19 @@
                     defaultStopSeq: 1,
                     stops: [
                         { seq: 1, name: '屯門站總站', eng: 'Tuen Mun Sta.', icon: '🚌' },
-                        { seq: 2, name: '震寰路 (大興邨)', eng: 'Tai Heng Estate', icon: '🏘️' },
-                        { seq: 3, name: '鳴琴路 (寶田邨)', eng: 'Po Tin Estate', icon: '🏘️' },
-                        { seq: 4, name: '石排頭路 (山景邨)', eng: 'Shan King Estate', icon: '🏘️' },
-                        { seq: 5, name: '落馬洲 (新田交匯處)', eng: 'Lok Ma Chau', icon: '🎯' }
+                        { seq: 2, name: '震寰路 (屯門消防局)', eng: 'Tuen Mun Fire Station', icon: '🏠' },
+                        { seq: 3, name: '震寰路 (大興政府合署)', eng: 'Tai Hing Govt Offices', icon: '🏠' },
+                        { seq: 4, name: '石排頭路 (翠林花園)', eng: 'Greenland Garden', icon: '🏘️' },
+                        { seq: 5, name: '石排頭路 (康德花園)', eng: 'Hong Tak Gardens', icon: '🏘️' },
+                        { seq: 6, name: '石排頭路 (偉昌工業中心)', eng: 'Wai Cheong Ind Centre', icon: '🏠' },
+                        { seq: 7, name: '鳴琴路 (石排輕鐵站)', eng: 'Shek Pai Stop', icon: '🏘️' },
+                        { seq: 8, name: '田景路 (新圍輕鐵站)', eng: 'San Wai Stop', icon: '🏘️' },
+                        { seq: 9, name: '田景路 (田景輕鐵站)', eng: 'Tin King Stop', icon: '🏘️' },
+                        { seq: 10, name: '鳴琴路 (寶田商場)', eng: 'Po Tin Shopping Centre', icon: '🏘️' },
+                        { seq: 11, name: '震寰路 (大興警署)', eng: 'Tai Hing Police Station', icon: '🏠' },
+                        { seq: 12, name: '青麟路 (麒麟輕鐵站)', eng: 'Kei Lun Stop', icon: '🏘️' },
+                        { seq: 13, name: '青麟路 (兆康苑)', eng: 'Siu Hong Court', icon: '🏘️' },
+                        { seq: 14, name: '落馬洲 (新田) 總站', eng: 'Lok Ma Chau (San Tin)', icon: '🎯' }
                     ]
                 },
                 inbound: {
@@ -738,17 +760,28 @@
                     destination: '屯門站',
                     defaultStopSeq: 1,
                     stops: [
-                        { seq: 1, name: '落馬洲 (新田總站)', eng: 'Lok Ma Chau', icon: '🚌' },
-                        { seq: 2, name: '石排頭路', eng: 'Shek Pai Tau Rd', icon: '🛣️' },
-                        { seq: 3, name: '鳴琴路 (寶田邨)', eng: 'Po Tin Estate', icon: '🏘️' },
-                        { seq: 4, name: '震寰路 (大興邨)', eng: 'Tai Heng Estate', icon: '🏘️' },
-                        { seq: 5, name: '屯門站總站', eng: 'Tuen Mun Sta.', icon: '🎯' }
+                        { seq: 1, name: '落馬洲 (新田) 總站', eng: 'Lok Ma Chau (San Tin)', icon: '🚌' },
+                        { seq: 2, name: '青麟路 (兆麗閣)', eng: 'Siu Lai House', icon: '🏘️' },
+                        { seq: 3, name: '青麟路 (兆賢閣)', eng: 'Siu Yin House', icon: '🏘️' },
+                        { seq: 4, name: '震寰路 (寶怡花園)', eng: 'Blossom Garden', icon: '🏘️' },
+                        { seq: 5, name: '鳴琴路 (盈豐園)', eng: 'Goodrich Garden', icon: '🏘️' },
+                        { seq: 6, name: '田景路 (田樂樓)', eng: 'Tin Lok House', icon: '🏘️' },
+                        { seq: 7, name: '田景路 (良景巴士總站)', eng: 'Leung King B/T', icon: '🏘️' },
+                        { seq: 8, name: '田景路 (田裕樓)', eng: 'Tin Yue House', icon: '🏘️' },
+                        { seq: 9, name: '鳴琴路 (石排輕鐵站)', eng: 'Shek Pai Stop', icon: '🏘️' },
+                        { seq: 10, name: '石排頭路 (德雅工業中心)', eng: 'Tak Nga Ind Centre', icon: '🏠' },
+                        { seq: 11, name: '石排頭路 (翠林花園)', eng: 'Greenland Garden', icon: '🏘️' },
+                        { seq: 12, name: '震寰路 (學童牙科診所)', eng: 'School Dental Clinic', icon: '🏠' },
+                        { seq: 13, name: '震寰路 (巴士廠)', eng: 'KMB Bus Depot', icon: '🏠' },
+                        { seq: 14, name: '震寰路 (屯門警署)', eng: 'Tuen Mun Police HQ', icon: '🏠' },
+                        { seq: 15, name: '屯門站總站', eng: 'Tuen Mun Sta.', icon: '🎯' }
                     ]
                 }
             },
             '44B1': {
                 id: '44B1',
-                routeId: 2000133,
+                routeId: 2004197,
+                etaRouteSeq: { outbound: 2, inbound: 1 },
                 title: '44B1',
                 badgeBg: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-400',
                 viaYauOiOutbound: true,
@@ -761,10 +794,17 @@
                     defaultStopSeq: 1,
                     stops: [
                         { seq: 1, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🚌' },
-                        { seq: 2, name: '龍門路 (新屯門中心)', eng: 'Lung Mun Rd', icon: '🏘️' },
-                        { seq: 3, name: '友愛邨 (屯門鄉事會路)', eng: 'Yau Oi Estate', icon: '❤️' },
-                        { seq: 4, name: '屯門市中心', eng: 'Tuen Mun Town Ctr', icon: '🏢' },
-                        { seq: 5, name: '落馬洲 (新田總站)', eng: 'Lok Ma Chau', icon: '🎯' }
+                        { seq: 2, name: '湖翠路 (邁亞美海灣)', eng: 'Miami Beach Towers', icon: '🏠' },
+                        { seq: 3, name: '湖翠路 (海翠花園)', eng: 'Hoi Tsui Garden', icon: '🏠' },
+                        { seq: 4, name: '湖翠路 (美樂花園)', eng: 'Melody Garden', icon: '🏠' },
+                        { seq: 5, name: '龍門路 (蝴蝶輕鐵站)', eng: 'Butterfly Stop', icon: '🏘️' },
+                        { seq: 6, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
+                        { seq: 7, name: '龍門路 (龍門輕鐵站)', eng: 'Lung Mun Stop', icon: '🏘️' },
+                        { seq: 8, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
+                        { seq: 9, name: '海珠路 (翠寧花園)', eng: 'Tsui Ning Garden', icon: '🏘️' },
+                        { seq: 10, name: '友愛邨 (屯門鄉事會路)', eng: 'Yau Oi Estate', icon: '❤️' },
+                        { seq: 11, name: '屯門市中心 (輕鐵站)', eng: 'Town Centre', icon: '🏢' },
+                        { seq: 12, name: '落馬洲 (新田) 總站', eng: 'Lok Ma Chau (San Tin)', icon: '🎯' }
                     ]
                 },
                 inbound: {
@@ -772,17 +812,27 @@
                     destination: '屯門碼頭',
                     defaultStopSeq: 1,
                     stops: [
-                        { seq: 1, name: '落馬洲 (新田總站)', eng: 'Lok Ma Chau', icon: '🚌' },
-                        { seq: 2, name: '屯門市中心', eng: 'Tuen Mun Town Ctr', icon: '🏢' },
-                        { seq: 3, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '🏘️' },
-                        { seq: 4, name: '龍門路 (新屯門中心)', eng: 'Lung Mun Rd', icon: '🏫' },
-                        { seq: 5, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🎯' }
+                        { seq: 1, name: '落馬洲 (新田) 總站', eng: 'Lok Ma Chau (San Tin)', icon: '🚌' },
+                        { seq: 2, name: '屯門市中心 (巴士總站)', eng: 'Tuen Mun Town Centre', icon: '🏢' },
+                        { seq: 3, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '❤️' },
+                        { seq: 4, name: '兆麟苑 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
+                        { seq: 5, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
+                        { seq: 6, name: '龍門路 (富健花園)', eng: 'Glorious Garden', icon: '🏘️' },
+                        { seq: 7, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
+                        { seq: 8, name: '龍門路 (蝴蝶邨蝶影樓)', eng: 'Butterfly Estate', icon: '🏘️' },
+                        { seq: 9, name: '湖翠路 (蝴蝶邨)', eng: 'Butterfly Estate', icon: '🏠' },
+                        { seq: 10, name: '湖翠路 (湖景邨)', eng: 'Wu King Estate', icon: '🏠' },
+                        { seq: 11, name: '湖翠路 (兆禧苑)', eng: 'Siu Hei Court', icon: '🏠' },
+                        { seq: 12, name: '湖翠路 (劉德容小學)', eng: 'Lau Tak Yung Memorial School', icon: '🏠' },
+                        { seq: 13, name: '湖翠路 (嘉智中學)', eng: 'Wu Chui Rd', icon: '🏠' },
+                        { seq: 14, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🎯' }
                     ]
                 }
             },
             'N44B': {
                 id: 'N44B',
-                routeId: 2000134,
+                routeId: 2004165,
+                etaRouteSeq: { outbound: 2, inbound: 1 },
                 title: 'N44B',
                 badgeBg: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-400',
                 viaYauOiOutbound: true,
@@ -795,10 +845,31 @@
                     defaultStopSeq: 1,
                     stops: [
                         { seq: 1, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🌙' },
-                        { seq: 2, name: '龍門路 (新屯門中心)', eng: 'Lung Mun Rd', icon: '🏘️' },
-                        { seq: 3, name: '友愛邨 (屯門鄉事會路)', eng: 'Yau Oi Estate', icon: '❤️' },
-                        { seq: 4, name: '屯門市中心', eng: 'Tuen Mun Town Ctr', icon: '🏢' },
-                        { seq: 5, name: '落馬洲管制站 (通宵線)', eng: 'Lok Ma Chau Control Pt', icon: '🎯' }
+                        { seq: 2, name: '湖翠路 (邁亞美海灣)', eng: 'Miami Beach Towers', icon: '🏠' },
+                        { seq: 3, name: '湖翠路 (海翠花園)', eng: 'Hoi Tsui Garden', icon: '🏠' },
+                        { seq: 4, name: '湖翠路 (美樂花園)', eng: 'Melody Garden', icon: '🏠' },
+                        { seq: 5, name: '龍門路 (蝴蝶輕鐵站)', eng: 'Butterfly Stop', icon: '🏘️' },
+                        { seq: 6, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
+                        { seq: 7, name: '龍門路 (龍門輕鐵站)', eng: 'Lung Mun Stop', icon: '🏘️' },
+                        { seq: 8, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
+                        { seq: 9, name: '海珠路 (翠寧花園)', eng: 'Tsui Ning Garden', icon: '🏘️' },
+                        { seq: 10, name: '友愛邨 (屯門鄉事會路)', eng: 'Yau Oi Estate', icon: '❤️' },
+                        { seq: 11, name: '屯門市中心 (輕鐵站)', eng: 'Town Centre', icon: '🏢' },
+                        { seq: 12, name: '屯門站 (公共運輸交匯處)', eng: 'Tuen Mun Station', icon: '🏢' },
+                        { seq: 13, name: '震寰路 (屯門消防局)', eng: 'Tuen Mun Fire Station', icon: '🏠' },
+                        { seq: 14, name: '震寰路 (大興政府合署)', eng: 'Tai Hing Govt Offices', icon: '🏠' },
+                        { seq: 15, name: '石排頭路 (翠林花園)', eng: 'Greenland Garden', icon: '🏘️' },
+                        { seq: 16, name: '石排頭路 (康德花園)', eng: 'Hong Tak Gardens', icon: '🏘️' },
+                        { seq: 17, name: '石排頭路 (偉昌工業中心)', eng: 'Wai Cheong Ind Centre', icon: '🏠' },
+                        { seq: 18, name: '鳴琴路 (石排輕鐵站)', eng: 'Shek Pai Stop', icon: '🏘️' },
+                        { seq: 19, name: '田景路 (新圍輕鐵站)', eng: 'San Wai Stop', icon: '🏘️' },
+                        { seq: 20, name: '田景路 (田景輕鐵站)', eng: 'Tin King Stop', icon: '🏘️' },
+                        { seq: 21, name: '鳴琴路 (寶田商場)', eng: 'Po Tin Shopping Centre', icon: '🏘️' },
+                        { seq: 22, name: '震寰路 (大興警署)', eng: 'Tai Hing Police Station', icon: '🏠' },
+                        { seq: 23, name: '青麟路 (麒麟輕鐵站)', eng: 'Kei Lun Stop', icon: '🏘️' },
+                        { seq: 24, name: '青麟路 (兆康苑)', eng: 'Siu Hong Court', icon: '🏘️' },
+                        { seq: 25, name: '落馬洲 (新田) 交匯處', eng: 'San Tin PTI', icon: '🏠' },
+                        { seq: 26, name: '落馬洲管制站', eng: 'Lok Ma Chau Control Pt', icon: '🎯' }
                     ]
                 },
                 inbound: {
@@ -807,10 +878,33 @@
                     defaultStopSeq: 1,
                     stops: [
                         { seq: 1, name: '落馬洲管制站', eng: 'Lok Ma Chau Control Pt', icon: '🌙' },
-                        { seq: 2, name: '屯門市中心', eng: 'Tuen Mun Town Ctr', icon: '🏢' },
-                        { seq: 3, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '🏘️' },
-                        { seq: 4, name: '龍門路 (新屯門中心)', eng: 'Lung Mun Rd', icon: '🏫' },
-                        { seq: 5, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🎯' }
+                        { seq: 2, name: '落馬洲 (新田) 交匯處', eng: 'San Tin PTI', icon: '🏠' },
+                        { seq: 3, name: '青麟路 (兆麗閣)', eng: 'Siu Lai House', icon: '🏘️' },
+                        { seq: 4, name: '青麟路 (兆賢閣)', eng: 'Siu Yin House', icon: '🏘️' },
+                        { seq: 5, name: '震寰路 (寶怡花園)', eng: 'Blossom Garden', icon: '🏘️' },
+                        { seq: 6, name: '鳴琴路 (盈豐園)', eng: 'Goodrich Garden', icon: '🏘️' },
+                        { seq: 7, name: '田景路 (田樂樓)', eng: 'Tin Lok House', icon: '🏘️' },
+                        { seq: 8, name: '田景路 (良景巴士總站)', eng: 'Leung King B/T', icon: '🏘️' },
+                        { seq: 9, name: '田景路 (田裕樓)', eng: 'Tin Yue House', icon: '🏘️' },
+                        { seq: 10, name: '鳴琴路 (石排輕鐵站)', eng: 'Shek Pai Stop', icon: '🏘️' },
+                        { seq: 11, name: '石排頭路 (德雅工業中心)', eng: 'Tak Nga Ind Centre', icon: '🏠' },
+                        { seq: 12, name: '石排頭路 (翠林花園)', eng: 'Greenland Garden', icon: '🏘️' },
+                        { seq: 13, name: '震寰路 (學童牙科診所)', eng: 'School Dental Clinic', icon: '🏠' },
+                        { seq: 14, name: '震寰路 (巴士廠)', eng: 'KMB Bus Depot', icon: '🏠' },
+                        { seq: 15, name: '震寰路 (屯門警署)', eng: 'Tuen Mun Police HQ', icon: '🏠' },
+                        { seq: 16, name: '屯門站 (公共運輸交匯處)', eng: 'Tuen Mun Station', icon: '🏢' },
+                        { seq: 17, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '❤️' },
+                        { seq: 18, name: '兆麟苑 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
+                        { seq: 19, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
+                        { seq: 20, name: '龍門路 (富健花園)', eng: 'Glorious Garden', icon: '🏘️' },
+                        { seq: 21, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
+                        { seq: 22, name: '龍門路 (蝴蝶邨蝶影樓)', eng: 'Butterfly Estate', icon: '🏘️' },
+                        { seq: 23, name: '湖翠路 (蝴蝶邨)', eng: 'Butterfly Estate', icon: '🏠' },
+                        { seq: 24, name: '湖翠路 (湖景邨)', eng: 'Wu King Estate', icon: '🏠' },
+                        { seq: 25, name: '湖翠路 (兆禧苑)', eng: 'Siu Hei Court', icon: '🏠' },
+                        { seq: 26, name: '湖翠路 (劉德容小學)', eng: 'Lau Tak Yung Memorial School', icon: '🏠' },
+                        { seq: 27, name: '湖翠路 (嘉智中學)', eng: 'Wu Chui Rd', icon: '🏠' },
+                        { seq: 28, name: '屯門碼頭總站', eng: 'Tuen Mun Pier Head', icon: '🎯' }
                     ]
                 }
             }
@@ -1057,7 +1151,8 @@
                 if (!etaContainerEl) continue;
 
                 try {
-                    const routeSeq = (subAppDirection === 'outbound') ? 1 : 2;
+                    // 每條線去/回程用唔同 route_seq（44B/44B1/N44B 的 seq 1/2 與去回程方向相反）
+                    const routeSeq = (route.etaRouteSeq && route.etaRouteSeq[subAppDirection]) || ((subAppDirection === 'outbound') ? 1 : 2);
                     const apiUrl = `https://data.etagmb.gov.hk/eta/route-stop/${route.routeId}/${routeSeq}/${activeStopObj.seq}`;
 
                     const response = await fetch(apiUrl);
