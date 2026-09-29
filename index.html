@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.2.0) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.7.0) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.2</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.7</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -318,7 +318,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.2</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.7</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -391,9 +391,6 @@
     </div>
 
     <script>
-        const KW_TSUINING = ['翠寧', '翠寧花園', '海珠路'];
-        const KW_SIULUN = ['兆麟', '老鼠洲', '友愛南', '三聖', '恆福'];
-        const KW_RATPARK = ['兆麟', '老鼠洲', '三聖', '恆福', '屯門中央公園', '置樂'];
 
         // 路線核心設定庫：確保 44, 44B1, 43C, 140M, B3, 962X 以及兆麟全線無一遺漏
         const ROUTES = [
@@ -431,7 +428,8 @@
                 type: 'MTRBUS_REAL', 
                 category: 'mtrbus',
                 route: 'K51', 
-                stop_id: 'K51-D150', 
+                stop_id: 'K51-D140', 
+                stop_name: '恆福花園',
                 label: '往 屯門站 / 富泰',
                 label_en: 'To Tuen Mun Sta. / Fu Tai',
                 group: '港鐵接駁巴士 (K51 / K53)', 
@@ -461,6 +459,46 @@
                 group: '港鐵接駁巴士 (K51 / K53)', 
                 group_en: 'MTR Feeder Bus (K51 / K53)',
                 color: 'amber' 
+            },
+            // 🥈➕ 港鐵接駁巴士 K52（老鼠洲/三聖一帶）及 506（兆麟苑 ➔ 屯門碼頭）
+            {
+                id: 'mtr-k52-out',
+                type: 'MTRBUS_REAL',
+                category: 'mtrbus',
+                route: 'K52',
+                stop_id: 'K52-nU070',
+                stop_name: '恆福花園 (輕鐵三聖站)',
+                label: '三聖站 ➔ 龍鼓灘 (K52)',
+                label_en: 'Sam Shing ➔ Lung Kwu Tan (K52)',
+                group: '港鐵接駁巴士 (K52 / 506)',
+                group_en: 'MTR Feeder Bus (K52 / 506)',
+                color: 'amber'
+            },
+            {
+                id: 'mtr-k52-in',
+                type: 'MTRBUS_REAL',
+                category: 'mtrbus',
+                route: 'K52',
+                stop_id: 'K52-nD240',
+                stop_name: '恆福花園 (輕鐵三聖站)',
+                label: '三聖站 ➔ 悅湖山莊 (經屯門碼頭)',
+                label_en: 'Sam Shing ➔ Yuet Wu Villa (via Ferry Pier)',
+                group: '港鐵接駁巴士 (K52 / 506)',
+                group_en: 'MTR Feeder Bus (K52 / 506)',
+                color: 'amber'
+            },
+            {
+                id: 'mtr-506-pier',
+                type: 'MTRBUS_REAL',
+                category: 'mtrbus',
+                route: '506',
+                stop_id: '506-D010',
+                stop_name: '兆麟 (兆麟苑)',
+                label: '兆麟苑 ➔ 屯門碼頭 (506)',
+                label_en: 'Siu Lun Court ➔ Tuen Mun Ferry Pier (506)',
+                group: '港鐵接駁巴士 (K52 / 506)',
+                group_en: 'MTR Feeder Bus (K52 / 506)',
+                color: 'amber'
             },
 
             // 🥉 綠色小巴：44（翠寧鎖定）、44B1（翠寧鎖定）、43C 與 140M 全面救回
@@ -501,9 +539,9 @@
                 route: '43C', 
                 route_seq: 1,
                 stop_seq: 8,
-                stop_title: '三聖巴士總站',
-                label: '三聖總站 ➔ 屯門新墟街市', 
-                label_en: 'Sam Shing Terminus ➔ San Hui Market',
+                stop_title: '三聖巴士總站 (往兆麟苑）',
+                label: '三聖總站 ➔ 兆麟苑', 
+                label_en: 'Sam Shing Terminus ➔ Siu Lun Court',
                 group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
                 group_en: 'Green Minibus Routes',
                 color: 'emerald' 
@@ -515,7 +553,7 @@
                 route: '43C', 
                 route_seq: 1,
                 stop_seq: 1,
-                stop_title: '屯門新墟街市 (43C 總站)',
+                stop_title: '屯門新墟街市 (43C 往兆麟苑，途經三聖）',
                 label: '屯門新墟街市 ➔ 三聖總站', 
                 label_en: 'San Hui Market ➔ Sam Shing Terminus',
                 group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
@@ -549,176 +587,376 @@
                 color: 'darkemerald' 
             },
 
-            // 🚩【獨立兆麟站專區】：途經兆麟苑/老鼠洲之全數九巴與龍運線
-            { 
-                id: 'kmb-261', 
-                type: 'KMB_TSUINING_FIRST', 
-                category: 'siulun',
-                route: '261', 
-                keywords: ['翠寧', '老鼠洲', '兆麟'], 
-                label: '往 上水 / 粉嶺 (祥華)', 
-                label_en: 'To Sheung Shui / Fanling (Cheung Wah)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
+            // 🚌【三聖總站】：九巴 261、61M（站牌 TM988 / TM990 實地核實；stop_id 已用官方九巴 API 逐條鎖定 bound＋seq，唔再做關鍵字猜測）
+            {
+                id: 'kmb-261-samshing',
+                type: 'KMB_DIRECT',
+                category: 'kmb',
+                route: '261',
+                bound: 'O', // 三聖總站 (TM988)，outbound seq 1
+                stop_id: 'A3658E938F378588', // 三聖總站 (TM988)，outbound seq 1
+                stop_name: '三聖總站',
+                label: '往 粉嶺 (祥華)',
+                label_en: 'To Fanling (Cheung Wah)',
+                group: '三聖總站',
+                group_en: 'Sam Shing Bus Terminus',
+                color: 'red'
             },
-            { 
-                id: 'lwb-e33', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: 'E33', 
-                keywords: KW_SIULUN, 
-                label: '往 機場 (地面運輸中心)', 
-                label_en: 'To Airport (Ground Transportation Centre)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-61m', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '61M', 
-                keywords: KW_SIULUN, 
-                label: '往 荔景 (北)', 
+            {
+                id: 'kmb-61m-samshing',
+                type: 'KMB_DIRECT',
+                category: 'kmb',
+                route: '61M',
+                bound: 'O', // 三聖總站 (TM990)，outbound seq 9
+                stop_id: 'A2586669ADE21A28', // 三聖總站 (TM990)，outbound seq 9
+                stop_name: '三聖總站',
+                label: '往 荔景 (北)',
                 label_en: 'To Lai King (North)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-60m', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '60M', 
-                keywords: KW_SIULUN, 
-                label: '往 荃灣站', 
-                label_en: 'To Tsuen Wan Station',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-60x', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '60X', 
-                keywords: KW_SIULUN, 
-                label: '往 佐敦 (西九龍站)', 
-                label_en: 'To Jordan (West Kowloon Station)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-62x', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '62X', 
-                keywords: KW_SIULUN, 
-                label: '往 鯉魚門邨 (經觀塘)', 
-                label_en: 'To Lei Yue Mun Estate (via Kwun Tong)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-260x', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '260X', 
-                keywords: KW_SIULUN, 
-                label: '往 紅磡站 (經尖沙咀)', 
-                label_en: 'To Hung Hom Station (via TST)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-263', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '263', 
-                keywords: KW_SIULUN, 
-                label: '往 沙田站', 
-                label_en: 'To Sha Tin Station',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-52x', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: '52X', 
-                keywords: KW_SIULUN, 
-                label: '往 旺角 (柏景灣)', 
-                label_en: 'To Mong Kok (Park Avenue)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-a33', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: 'A33', 
-                keywords: KW_SIULUN, 
-                label: '往 機場 (地面運輸中心)', 
-                label_en: 'To Airport (Ground Transportation Centre)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
-            },
-            { 
-                id: 'kmb-a33x', 
-                type: 'KMB', 
-                category: 'siulun',
-                route: 'A33X', 
-                keywords: KW_SIULUN, 
-                label: '往 機場 (地面運輸中心)', 
-                label_en: 'To Airport (Ground Transportation Centre)',
-                group: '兆麟站專區 (途經兆麟苑 / 老鼠洲)', 
-                group_en: 'Siu Lun Station Special Zone (KMB / LWB)',
-                color: 'red' 
+                group: '三聖總站',
+                group_en: 'Sam Shing Bus Terminus',
+                color: 'red'
             },
 
-            // 🏅 城巴及過境專線（B3 / 962X 站點全面救回修復）
-            { 
-                id: 'ctb-b3-out', 
-                type: 'CTB_DIRECT', 
+            // 🚩【兆麟苑 ➔ 荃灣 / 九龍 / 機場】：17 條九巴/龍運線，全部用官方 API 逐條核實（九巴站牌 TM614／龍運站牌 TM615，各自 ID 不同）
+            {
+                id: 'kmb-60m',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '60M',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
+                stop_name: '兆麟苑',
+                label: '往 荃灣站',
+                label_en: 'To Tsuen Wan Station',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-60x',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '60X',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 3
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 3
+                stop_name: '兆麟苑',
+                label: '往 西九龍站',
+                label_en: 'To West Kowloon Station',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-61x',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '61X',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 3
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 3
+                stop_name: '兆麟苑',
+                label: '往 九龍城碼頭',
+                label_en: 'To Kowloon City Ferry',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-62p',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '62P',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 3
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 3
+                stop_name: '兆麟苑',
+                label: '往 鯉魚門邨',
+                label_en: 'To Lei Yue Mun Estate',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-62x',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '62X',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 7
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 7
+                stop_name: '兆麟苑',
+                label: '往 鯉魚門邨',
+                label_en: 'To Lei Yue Mun Estate',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-259s',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '259S',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 8
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 8
+                stop_name: '兆麟苑',
+                label: '往 觀塘碼頭',
+                label_en: 'To Kwun Tong Ferry',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-263',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '263',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
+                stop_name: '兆麟苑',
+                label: '往 沙田站',
+                label_en: 'To Sha Tin Station',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-263a',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '263A',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
+                stop_name: '兆麟苑',
+                label: '往 香港科學園',
+                label_en: 'To Hong Kong Science Park',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-263b',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '263B',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
+                stop_name: '兆麟苑',
+                label: '往 火炭 (山尾街)',
+                label_en: 'To Fo Tan (Shan Mei Street)',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-263c',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: '263C',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
+                stop_name: '兆麟苑',
+                label: '往 香港教育大學',
+                label_en: 'To The Education University of Hong Kong',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'kmb-n260',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'N260',
+                bound: 'O', // 兆麟苑 (TM614)，outbound seq 21
+                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 21
+                stop_name: '兆麟苑',
+                label: '往 美孚',
+                label_en: 'To Mei Foo',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'lwb-a33x',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'A33X',
+                bound: 'O', // 兆麟苑 (TM615)，outbound seq 11
+                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 11
+                stop_name: '兆麟苑',
+                label: '往 機場 (地面運輸中心)',
+                label_en: 'To Airport (Ground Transportation Centre)',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'lwb-e33',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'E33',
+                bound: 'O', // 兆麟苑 (TM615)，outbound seq 3
+                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 3
+                stop_name: '兆麟苑',
+                label: '往 機場 (地面運輸中心)',
+                label_en: 'To Airport (Ground Transportation Centre)',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'lwb-e37c',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'E37C',
+                bound: 'O', // 兆麟苑 (TM615)，outbound seq 19
+                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 19
+                stop_name: '兆麟苑',
+                label: '往 飛機維修區',
+                label_en: 'To Aircraft Maintenance Area',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'lwb-r33',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'R33',
+                bound: 'I', // 兆麟苑 (TM615)，inbound seq 4
+                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，inbound seq 4
+                stop_name: '兆麟苑',
+                label: '往 迪士尼樂園',
+                label_en: 'To Disneyland',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'lwb-na33',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'NA33',
+                bound: 'I', // 兆麟苑 (TM615)，inbound seq 21
+                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，inbound seq 21
+                stop_name: '兆麟苑',
+                label: '往 國泰城 (機場)',
+                label_en: 'To Cathay City (Airport)',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+            {
+                id: 'lwb-n30',
+                type: 'KMB_DIRECT',
+                category: 'siulun',
+                route: 'N30',
+                bound: 'O', // 兆麟苑 (TM615)，outbound seq 24
+                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 24
+                stop_name: '兆麟苑',
+                label: '往 機場 (暢達路)',
+                label_en: 'To Airport (Cheong Tat Road)',
+                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
+                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                color: 'red'
+            },
+
+            // 🏝️【老鼠洲兒童遊樂場】：九巴 260C、261（站牌 TM690）＋ 城巴 962 系往港島、B3 往深圳灣口岸（站牌 1922A；stop_id 全部用官方 API 核實）
+            {
+                id: 'kmb-260c-mouse',
+                type: 'KMB_DIRECT',
                 category: 'kmb',
-                route: 'B3', 
-                stop_id: '001140', // 老鼠洲/兆麟站站點代碼
-                label: '往 深圳灣口岸 (經老鼠洲)', 
+                route: '260C',
+                bound: 'I', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 14
+                stop_id: 'E105131B41FBAF33', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 14
+                stop_name: '老鼠洲兒童遊樂場',
+                label: '往 屯門 (三聖邨)',
+                label_en: 'To Tuen Mun (Sam Shing Estate)',
+                group: '老鼠洲兒童遊樂場',
+                group_en: 'Mouse Island Children\'s Playground',
+                color: 'red'
+            },
+            {
+                id: 'kmb-261-mouse',
+                type: 'KMB_DIRECT',
+                category: 'kmb',
+                route: '261',
+                bound: 'I', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 23
+                stop_id: 'E105131B41FBAF33', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 23
+                stop_name: '老鼠洲兒童遊樂場',
+                label: '往 屯門 (三聖邨)',
+                label_en: 'To Tuen Mun (Sam Shing Estate)',
+                group: '老鼠洲兒童遊樂場',
+                group_en: 'Mouse Island Children\'s Playground',
+                color: 'red'
+            },
+            {
+                id: 'ctb-962-mouse',
+                type: 'CTB_DIRECT',
+                category: 'kmb',
+                route: '962',
+                stop_id: '001922',
+                label: '往 銅鑼灣 (摩頓台)',
+                label_en: 'To Causeway Bay (Moreton Terrace)',
+                group: '老鼠洲兒童遊樂場',
+                group_en: 'Mouse Island Children\'s Playground',
+                color: 'rose'
+            },
+            {
+                id: 'ctb-962x-mouse',
+                type: 'CTB_DIRECT',
+                category: 'kmb',
+                route: '962X',
+                stop_id: '001922',
+                label: '往 銅鑼灣 (摩頓台)',
+                label_en: 'To Causeway Bay (Moreton Terrace)',
+                group: '老鼠洲兒童遊樂場',
+                group_en: 'Mouse Island Children\'s Playground',
+                color: 'rose'
+            },
+            {
+                id: 'ctb-962c-mouse',
+                type: 'CTB_DIRECT',
+                category: 'kmb',
+                route: '962C',
+                stop_id: '001922',
+                label: '往 太古 (康怡廣場)',
+                label_en: 'To Tai Koo (Kornhill Plaza)',
+                group: '老鼠洲兒童遊樂場',
+                group_en: 'Mouse Island Children\'s Playground',
+                color: 'rose'
+            },
+            {
+                id: 'ctb-n962-mouse',
+                type: 'CTB_DIRECT',
+                category: 'kmb',
+                route: 'N962',
+                stop_id: '001922',
+                label: '往 銅鑼灣 (摩頓台) (通宵)',
+                label_en: 'To Causeway Bay (Moreton Terrace) (Overnight)',
+                group: '老鼠洲兒童遊樂場',
+                group_en: 'Mouse Island Children\'s Playground',
+                color: 'rose'
+            },
+            {
+                id: 'ctb-b3-out',
+                type: 'CTB_DIRECT',
+                category: 'kmb',
+                route: 'B3',
+                stop_id: '001922', // 老鼠洲兒童遊樂場, 海榮路
+                label: '往 深圳灣口岸 (經老鼠洲)',
                 label_en: 'To Shenzhen Bay Port (via Mouse Island)',
-                group: 'B3 過境專線 (深圳灣)', 
-                group_en: 'B3 Cross-Boundary Bus',
-                color: 'amber' 
+                group: '老鼠洲兒童遊樂場',
+                group_en: "Mouse Island Children\'s Playground",
+                color: 'amber'
             },
-            { 
-                id: 'ctb-b3-in', 
-                type: 'CTB_DIRECT', 
+            {
+                id: 'ctb-b3-in',
+                type: 'CTB_DIRECT',
                 category: 'kmb',
-                route: 'B3', 
+                route: 'B3',
                 stop_id: '003208', // 深圳灣口岸總站代碼
-                label: '由深圳灣口岸開出 ➔ 屯門碼頭', 
+                label: '由深圳灣口岸開出 ➔ 屯門碼頭',
                 label_en: 'From Shenzhen Bay Port ➔ Tuen Mun Ferry',
-                group: 'B3 過境專線 (深圳灣)', 
+                group: 'B3 過境專線 (深圳灣)',
                 group_en: 'B3 Cross-Boundary Bus',
-                color: 'amber' 
-            },
-            { 
-                id: 'ctb-962x', 
-                type: 'CTB_DIRECT', 
-                category: 'kmb',
-                route: '962X', 
-                stop_id: '001140', // 恆福花園 / 三聖站
-                label: '往 銅鑼灣 (經三聖/置樂)', 
-                label_en: 'To Causeway Bay (via Sam Shing)',
-                group: '過海隧巴專線 (962X / 952)', 
-                group_en: 'Cross-Harbour Bus Routes',
-                color: 'rose' 
+                color: 'amber'
             }
         ];
 
@@ -981,8 +1219,6 @@
         };
 
         const CACHE = {};
-        const DICT_KMB = {};
-        let kmbStopsPromise = null;
         let activeTab = 'all';
         let favorites = new Set(JSON.parse(localStorage.getItem('hanford_favs') || '[]'));
 
@@ -1179,7 +1415,7 @@
                                         btnStyle = "bg-emerald-600 text-white border-emerald-700 shadow-sm font-black";
                                     }
                                     return `
-                                        <button onclick="selectSubAppStop('${key}', ${stop.seq})" class="stop-btn shrink-0 text-xs font-bold px-3 py-1.5 rounded-xl border transition-all duration-150 flex items-center space-x-1 ${btnStyle}">
+                                        <button onclick="selectSubAppStop('${key}', ${stop.seq})" class="stop-btn shrink-0 text-sm font-bold px-4 py-2 rounded-xl border transition-all duration-150 flex items-center space-x-1 ${btnStyle}">
                                             <span>${stop.icon}</span>
                                             <span>${stop.name}</span>
                                         </button>
@@ -1225,36 +1461,7 @@
                     const routeSeq = (route.etaRouteSeq && route.etaRouteSeq[subAppDirection]) || ((subAppDirection === 'outbound') ? 1 : 2);
                     const apiUrl = `https://data.etagmb.gov.hk/eta/route-stop/${route.routeId}/${routeSeq}/${activeStopObj.seq}`;
 
-                    const response = await fetch(apiUrl);
-                    let rawEtas = [];
-
-                    if (response.ok) {
-                        const json = await response.json();
-                        if (json.data && json.data.eta && Array.isArray(json.data.eta)) {
-                            json.data.eta.forEach(bus => {
-                                let diffMins = null;
-                                if (typeof bus.diff === 'number') {
-                                    diffMins = Math.max(0, bus.diff);
-                                } else if (bus.timestamp) {
-                                    diffMins = getMins(bus.timestamp);
-                                }
-                                if (diffMins !== null && !isNaN(diffMins)) {
-                                    rawEtas.push({
-                                        diff: diffMins,
-                                        time: getEstimatedTimeStr(diffMins),
-                                        remark: bus.remarks_tc || ''
-                                    });
-                                }
-                            });
-                        }
-                    }
-
-                    // 確保 44 與 44B1 的時間各自獨立，絕不再重複相同
-                    if (rawEtas.length === 0) {
-                        let simMins = generateDistinctETAs(key, activeStopObj.seq);
-                        rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                    }
-
+                    let rawEtas = await fetchGMBEtaHonest(apiUrl);
                     rawEtas.sort((a, b) => a.diff - b.diff);
 
                     if (stopNameEl) {
@@ -1264,34 +1471,13 @@
                     renderMainPageStyleETA(etaContainerEl, rawEtas);
 
                 } catch (err) {
-                    let simMins = generateDistinctETAs(key, activeStopObj.seq);
-                    let rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                    renderMainPageStyleETA(etaContainerEl, rawEtas);
+                    renderMainPageStyleETA(etaContainerEl, []);
                 }
             }
 
             setTimeout(() => {
                 if (refreshIcon) refreshIcon.classList.remove('spin');
             }, 500);
-        }
-
-        // ★ 核心改進：按路線與站點編號加權雜湊，徹底杜絕 44 與 44B1 出現一模一樣時間
-        function generateDistinctETAs(routeKey, stopSeq) {
-            const currentHour = new Date().getHours();
-            if (routeKey === 'N44B' && (currentHour >= 6 && currentHour < 23)) {
-                return [];
-            }
-            let seed = 1;
-            if (routeKey === '44') seed = 3;
-            else if (routeKey === '44B1') seed = 7;
-            else if (routeKey === '44B') seed = 5;
-            else if (routeKey === 'N44B') seed = 9;
-
-            const base = (new Date().getMinutes() * seed + stopSeq * 4) % 11;
-            const m1 = Math.max(1, base % 7 + (seed % 3));
-            const m2 = m1 + 4 + (seed % 4);
-            const m3 = m2 + 6 + (stopSeq % 3);
-            return [m1, m2, m3];
         }
 
         function renderMainPageStyleETA(containerEl, etas) {
@@ -1354,48 +1540,6 @@
         
         function setStorage(key, data) {
             try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch(e) {}
-        }
-
-        async function getKmbStopsDict() {
-            if (Object.keys(DICT_KMB).length > 0) return DICT_KMB;
-            const cachedStops = getStorage('kmb_all_stops', 86400000);
-            if (cachedStops) {
-                Object.assign(DICT_KMB, cachedStops);
-                return DICT_KMB;
-            }
-            if (!kmbStopsPromise) {
-                kmbStopsPromise = (async () => {
-                    try {
-                        const kmbRes = await fetch('https://data.etabus.gov.hk/v1/transport/kmb/stop');
-                        if (kmbRes.ok) {
-                            const kmbData = await kmbRes.json();
-                            if (kmbData && kmbData.data) {
-                                kmbData.data.forEach(s => DICT_KMB[s.stop] = s.name_tc);
-                                setStorage('kmb_all_stops', DICT_KMB);
-                            }
-                        }
-                    } catch (e) {
-                        console.error("KMB stop dict error:", e);
-                    }
-                    return DICT_KMB;
-                })();
-            }
-            return kmbStopsPromise;
-        }
-
-        async function getKmbStopName(stopId) {
-            if (DICT_KMB[stopId]) return DICT_KMB[stopId];
-            try {
-                const res = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/stop/${stopId}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.data && data.data.name_tc) {
-                        DICT_KMB[stopId] = data.data.name_tc;
-                        return data.data.name_tc;
-                    }
-                }
-            } catch(e) {}
-            return null;
         }
 
         function getHkoIconDetails(code) {
@@ -1684,7 +1828,7 @@
 
             let html = '';
             groupOrder.forEach(groupName => {
-                const isSiuLunGroup = groupName.includes('兆麟站專區');
+                const isSiuLunGroup = groupName.includes('兆麟苑');
                 let icon = isSiuLunGroup ? 'fa-bus-simple text-amber-300'
                     : groupName.includes('輕鐵') ? 'fa-train-tram' 
                     : groupName.includes('接駁') ? 'fa-bus-simple' 
@@ -1909,7 +2053,7 @@
                     const targetStop = data.busStop.find(s => {
                         const sId = s.busStopId || '';
                         return sId === item.stop_id || sId.includes(item.stop_id);
-                    }) || data.busStop[0];
+                    });
 
                     if (targetStop && targetStop.bus) {
                         targetStop.bus.forEach(b => {
@@ -1926,9 +2070,9 @@
                     }
                 }
 
-                renderResult(item.id, '恆福花園(輕鐵三聖站)', rawEtas, item.color);
+                renderResult(item.id, item.stop_name || '恆福花園(輕鐵三聖站)', rawEtas, item.color);
             } catch (e) {
-                renderResult(item.id, '恆福花園(輕鐵三聖站)', [], item.color);
+                renderResult(item.id, item.stop_name || '恆福花園(輕鐵三聖站)', [], item.color);
             }
         }
 
@@ -1937,7 +2081,7 @@
             const order = lrtPillOrder(itemId);
             const sel = LRT_505_SEL[itemId];
             const isOut = itemId === 'lrt-505-out';
-            const base = 'flex-shrink-0 whitespace-nowrap px-3 py-1.5 rounded-full text-xs sm:text-sm font-black border transition active:scale-95 cursor-pointer';
+            const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
             let h = '';
             order.forEach((st, i) => {
                 const active = st.id === sel;
@@ -2019,220 +2163,110 @@
             }
         }
 
-        // 44 / 44B1 翠寧站專用抓取
+        // 44 / 44B1 翠寧站專用抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMBDirect(item) {
-            let rawEtas = [];
             const stopTitle = item.stop_name || '海珠路 (翠寧花園 - 翠寧站)';
-
-            try {
-                const url = `https://data.etagmb.gov.hk/eta/route-stop/${item.route_id}/${item.route_seq}/${item.stop_seq}`;
-                const res = await fetch(url);
-                if (res.ok) {
-                    const resJson = await res.json();
-                    if (resJson && resJson.data && Array.isArray(resJson.data.eta)) {
-                        resJson.data.eta.forEach(bus => {
-                            let diffMins = null;
-                            if (typeof bus.diff === 'number') {
-                                diffMins = Math.max(0, bus.diff);
-                            } else if (bus.timestamp) {
-                                diffMins = getMins(bus.timestamp);
-                            }
-                            
-                            if (diffMins !== null && !isNaN(diffMins)) {
-                                rawEtas.push({
-                                    diff: diffMins,
-                                    time: getEstimatedTimeStr(diffMins),
-                                    remark: bus.remarks_tc || ''
-                                });
-                            }
-                        });
-                    }
-                }
-
-                if (rawEtas.length === 0) {
-                    let simMins = generateDistinctETAs(item.route, item.stop_seq);
-                    rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                }
-
-                rawEtas.sort((a, b) => a.diff - b.diff);
-                renderResult(item.id, stopTitle, rawEtas, item.color);
-            } catch (e) {
-                let simMins = generateDistinctETAs(item.route, item.stop_seq);
-                let rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                renderResult(item.id, stopTitle, rawEtas, item.color);
-            }
+            const url = `https://data.etagmb.gov.hk/eta/route-stop/${item.route_id}/${item.route_seq}/${item.stop_seq}`;
+            const rawEtas = await fetchGMBEtaHonest(url);
+            rawEtas.sort((a, b) => a.diff - b.diff);
+            renderResult(item.id, stopTitle, rawEtas, item.color);
         }
 
-        // 43C 專線小巴抓取 (救回並保證穩定)
-        async function fetchGMB43C(item) {
+        // 解析 GMB 官方 ETA 回傳為 rawEtas 陣列
+        function parseGMBEtaArray(resJson) {
+            const rawEtas = [];
+            if (resJson && resJson.data && Array.isArray(resJson.data.eta)) {
+                resJson.data.eta.forEach(bus => {
+                    let diffMins = null;
+                    if (typeof bus.diff === 'number') {
+                        diffMins = Math.max(0, bus.diff);
+                    } else if (bus.timestamp) {
+                        diffMins = getMins(bus.timestamp);
+                    }
+                    if (diffMins !== null && !isNaN(diffMins)) {
+                        rawEtas.push({
+                            diff: diffMins,
+                            time: getEstimatedTimeStr(diffMins),
+                            remark: bus.remarks_tc || ''
+                        });
+                    }
+                });
+            }
+            return rawEtas;
+        }
+
+        // GMB 官方 ETA 誠實抓取：官方 API 偶有短暫回空，最多試 3 次（退避重試），仍無則如實回傳空陣列 (絕不偽造班次時間)
+        async function fetchGMBEtaHonest(url) {
             let rawEtas = [];
+            for (let attempt = 0; attempt < 3 && rawEtas.length === 0; attempt++) {
+                if (attempt > 0) await new Promise(r => setTimeout(r, 1200 * attempt));
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) rawEtas = parseGMBEtaArray(await res.json());
+                } catch (e) { /* 如實顯示暫無班次 */ }
+            }
+            return rawEtas;
+        }
+
+        // 43C 專線小巴抓取 (官方實時數據，無數據時如實顯示)
+        async function fetchGMB43C(item) {
             const routeSeq = item.route_seq || 1;
             const stopSeq = item.stop_seq || 8;
-            const stopTitle = item.stop_title || (routeSeq === 1 && stopSeq === 1 ? '屯門新墟街市 (43C 總站)' : '三聖巴士總站');
-
-            try {
-                const url = `https://data.etagmb.gov.hk/eta/route-stop/2001636/${routeSeq}/${stopSeq}`;
-                const res = await fetch(url);
-                if (res.ok) {
-                    const resJson = await res.json();
-                    if (resJson && resJson.data && Array.isArray(resJson.data.eta)) {
-                        resJson.data.eta.forEach(bus => {
-                            let diffMins = null;
-                            if (typeof bus.diff === 'number') {
-                                diffMins = Math.max(0, bus.diff);
-                            } else if (bus.timestamp) {
-                                diffMins = getMins(bus.timestamp);
-                            }
-                            
-                            if (diffMins !== null && !isNaN(diffMins)) {
-                                rawEtas.push({
-                                    diff: diffMins,
-                                    time: getEstimatedTimeStr(diffMins),
-                                    remark: bus.remarks_tc || ''
-                                });
-                            }
-                        });
-                    }
-                }
-
-                if (rawEtas.length === 0) {
-                    let simMins = generateDistinctETAs('43C', stopSeq);
-                    rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                }
-
-                rawEtas.sort((a, b) => a.diff - b.diff);
-                renderResult(item.id, stopTitle, rawEtas, item.color);
-            } catch (e) {
-                let simMins = generateDistinctETAs('43C', stopSeq);
-                let rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                renderResult(item.id, stopTitle, rawEtas, item.color);
-            }
+            const stopTitle = item.stop_title || (routeSeq === 1 && stopSeq === 1 ? '屯門新墟街市 (43C 往兆麟苑，途經三聖）' : '三聖巴士總站 (往兆麟苑）');
+            const url = `https://data.etagmb.gov.hk/eta/route-stop/2001636/${routeSeq}/${stopSeq}`;
+            const rawEtas = await fetchGMBEtaHonest(url);
+            rawEtas.sort((a, b) => a.diff - b.diff);
+            renderResult(item.id, stopTitle, rawEtas, item.color);
         }
 
-        // 140M 專線小巴抓取 (救回並保證穩定)
+        // 140M 專線小巴抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMB140M(item) {
-            let rawEtas = [];
             const stopTitle = item.route_seq === 1 ? '三聖巴士總站' : '青衣站專線小巴總站';
-
-            try {
-                const url = `https://data.etagmb.gov.hk/eta/route-stop/2004598/${item.route_seq}/${item.stop_seq}`;
-                const res = await fetch(url);
-                if (res.ok) {
-                    const resJson = await res.json();
-                    if (resJson && resJson.data && Array.isArray(resJson.data.eta)) {
-                        resJson.data.eta.forEach(bus => {
-                            let diffMins = null;
-                            if (typeof bus.diff === 'number') {
-                                diffMins = Math.max(0, bus.diff);
-                            } else if (bus.timestamp) {
-                                diffMins = getMins(bus.timestamp);
-                            }
-                            
-                            if (diffMins !== null && !isNaN(diffMins)) {
-                                rawEtas.push({
-                                    diff: diffMins,
-                                    time: getEstimatedTimeStr(diffMins),
-                                    remark: bus.remarks_tc || ''
-                                });
-                            }
-                        });
-                    }
-                }
-
-                if (rawEtas.length === 0) {
-                    let simMins = generateDistinctETAs('140M', item.stop_seq);
-                    rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                }
-
-                rawEtas.sort((a, b) => a.diff - b.diff);
-                renderResult(item.id, stopTitle, rawEtas, item.color);
-            } catch (e) {
-                let simMins = generateDistinctETAs('140M', item.stop_seq);
-                let rawEtas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                renderResult(item.id, stopTitle, rawEtas, item.color);
-            }
+            const url = `https://data.etagmb.gov.hk/eta/route-stop/2004598/${item.route_seq}/${item.stop_seq}`;
+            const rawEtas = await fetchGMBEtaHonest(url);
+            rawEtas.sort((a, b) => a.diff - b.diff);
+            renderResult(item.id, stopTitle, rawEtas, item.color);
         }
 
         // 九巴通用與翠寧優先抓取
-        async function fetchKMBCustom(item, forceTsuiNingFirst = false) {
-            try {
-                let target = CACHE[item.id];
-                
-                if (!target) {
-                    getKmbStopsDict();
-
-                    for (let dir of ['outbound', 'inbound']) { 
-                        try {
-                            const res1 = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/route-stop/${item.route}/${dir}/1`);
-                            if (res1.ok) {
-                                const data1 = await res1.json();
-                                if (data1 && Array.isArray(data1.data)) {
-                                    if (forceTsuiNingFirst) {
-                                        for (let stopObj of data1.data) {
-                                            let stopId = stopObj.stop;
-                                            let stopName = await getKmbStopName(stopId);
-                                            if (stopName && KW_TSUINING.some(k => stopName.includes(k))) {
-                                                target = { id: stopId, name: stopName };
-                                                CACHE[item.id] = target;
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (!target) {
-                                        for (let stopObj of data1.data) {
-                                            let stopId = stopObj.stop;
-                                            let stopName = await getKmbStopName(stopId);
-                                            if (stopName && item.keywords.some(k => stopName.includes(k))) {
-                                                target = { id: stopId, name: stopName };
-                                                CACHE[item.id] = target;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } catch(e) {}
-                        if (target) break; 
-                    }
+        // 九巴/龍運官方 ETA 誠實抓取：stop_id、bound、seq 全部已事先用官方 route-stop API 逐條核實鎖定（對照站牌實地照片），唔再做關鍵字猜測。
+        // 官方 API 偶有短暫回空（例如非服務時間），會退避重試最多 3 次；仍然無資料就如實顯示「暫無預測班次」。
+        async function fetchKMBEtaHonest(stopId, route, bound) {
+            const url = `https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${stopId}`;
+            const parseKMB = (data) => {
+                if (data && data.data && Array.isArray(data.data)) {
+                    return data.data
+                        .filter(d => d.route === route && d.dir === bound && d.eta)
+                        .sort((a, b) => a.eta_seq - b.eta_seq)
+                        .map(d => {
+                            let diffMins = getMins(d.eta);
+                            return { diff: diffMins, time: getEstimatedTimeStr(diffMins) };
+                        });
                 }
-
-                if (!target) return renderResult(item.id, null, [], item.color);
-
-                const res2 = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${target.id}`);
-                if (res2.ok) {
-                    const data2 = await res2.json();
-                    let etas = [];
-                    if (data2 && Array.isArray(data2.data)) {
-                        etas = data2.data
-                            .filter(d => d.route === item.route && d.eta) 
-                            .sort((a, b) => a.eta_seq - b.eta_seq)
-                            .map(d => {
-                                let diffMins = getMins(d.eta);
-                                return { diff: diffMins, time: getEstimatedTimeStr(diffMins) };
-                            });
-                    }
-                    renderResult(item.id, target.name, etas, item.color);
-                } else {
-                    renderResult(item.id, target.name, [], item.color);
-                }
-            } catch (e) {
-                renderResult(item.id, null, [], item.color);
+                return [];
+            };
+            let etas = [];
+            for (let attempt = 0; attempt < 3 && etas.length === 0; attempt++) {
+                if (attempt > 0) await new Promise(r => setTimeout(r, 1200 * attempt));
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) etas = parseKMB(await res.json());
+                } catch (e) { /* 唔整假班次，如實顯示暫無班次 */ }
             }
+            return etas;
         }
 
-        // 城巴直達抓取 (全面拯救 B3 / 962X)
-        async function fetchCTBDirect(item) {
-            let stopName = '巴士站';
-            if (item.stop_id === '003208') stopName = '深圳灣口岸總站';
-            else if (item.stop_id === '001140') stopName = item.route === 'B3' ? '老鼠洲兒童遊樂場 (兆麟)' : '恆福花園 / 三聖站';
+        async function fetchKMBDirect(item) {
+            const etas = await fetchKMBEtaHonest(item.stop_id, item.route, item.bound);
+            renderResult(item.id, item.stop_name, etas, item.color);
+        }
 
-            try {
-                const res = await fetch(`https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/${item.stop_id}/${item.route}`);
-                const data = await res.json();
-                let etas = [];
+        // 城巴官方 ETA 誠實抓取：官方 API 偶有短暫回空，最多試 3 次（退避重試），仍無則如實回傳空陣列 (絕不偽造班次時間)
+        async function fetchCTBEtaHonest(stopId, route) {
+            const url = `https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/${stopId}/${route}`;
+            const parseCTB = (data) => {
                 if (data && data.data && Array.isArray(data.data)) {
-                    etas = data.data
+                    return data.data
                         .filter(d => d.eta)
                         .sort((a, b) => a.eta_seq - b.eta_seq)
                         .map(d => {
@@ -2240,18 +2274,28 @@
                             return { diff: diffMins, time: getEstimatedTimeStr(diffMins), remark: d.rmk_tc || '' };
                         });
                 }
-
-                if (etas.length === 0) {
-                    let simMins = generateDistinctETAs(item.route, 2);
-                    etas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                }
-
-                renderResult(item.id, stopName, etas, item.color);
-            } catch (e) {
-                let simMins = generateDistinctETAs(item.route, 2);
-                let etas = simMins.map(m => ({ diff: m, time: getEstimatedTimeStr(m) }));
-                renderResult(item.id, stopName, etas, item.color);
+                return [];
+            };
+            let etas = [];
+            for (let attempt = 0; attempt < 3 && etas.length === 0; attempt++) {
+                if (attempt > 0) await new Promise(r => setTimeout(r, 1200 * attempt));
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) etas = parseCTB(await res.json());
+                } catch (e) { /* 如實顯示暫無班次 */ }
             }
+            return etas;
+        }
+
+        // 城巴直達抓取 (官方實時數據，無數據時如實顯示)
+        async function fetchCTBDirect(item) {
+            let stopName = '巴士站';
+            if (item.stop_id === '003208') stopName = '深圳灣口岸總站';
+            else if (item.stop_id === '001922') stopName = '老鼠洲兒童遊樂場 (海榮路)';
+            else if (item.stop_id === '001140') stopName = item.route === 'B3' ? '老鼠洲兒童遊樂場 (兆麟)' : '恆福花園 / 三聖站';
+
+            const etas = await fetchCTBEtaHonest(item.stop_id, item.route);
+            renderResult(item.id, stopName, etas, item.color);
         }
 
         async function fetchAllData(manual = false) {
@@ -2269,8 +2313,7 @@
 
             const promises = ROUTES.map(item => {
                 if (item.type === 'GMB_DIRECT') return fetchGMBDirect(item);
-                if (item.type === 'KMB_TSUINING_FIRST') return fetchKMBCustom(item, true);
-                if (item.type === 'KMB') return fetchKMBCustom(item, false);
+                if (item.type === 'KMB_DIRECT') return fetchKMBDirect(item);
                 if (item.type === 'CTB_DIRECT') return fetchCTBDirect(item);
                 if (item.type === 'LRT_DIR') return fetchLRTDir(item);
                 if (item.type === 'MTRBUS_REAL') return fetchMTRBusReal(item);
