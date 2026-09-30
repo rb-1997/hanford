@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.7.0) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.8.9) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -103,43 +103,66 @@
         <header class="bg-slate-900 dark:bg-slate-900 text-white shadow-xl sticky top-0 z-50 border-b-4 border-emerald-500 backdrop-blur-md bg-opacity-95 dark:bg-opacity-95">
             <div class="max-w-xl mx-auto px-3 sm:px-4 py-2.5">
                 <div class="flex justify-between items-center gap-2">
-                    <div class="flex items-center gap-2.5">
+                    <div class="flex items-center gap-2.5 flex-shrink-0">
                         <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 shadow-inner flex-shrink-0">
                             <i class="fa-solid fa-house-chimney text-lg"></i>
                         </div>
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.7</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.8.9</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
                     </div>
 
-                    <button onclick="fetchAllData(true)" class="h-9 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white px-3 rounded-xl transition font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-sm active:scale-95 border border-emerald-400/30 flex-shrink-0">
-                        <i class="fa-solid fa-rotate-right text-xs" id="refresh-icon"></i>
-                        <span>更新</span>
-                    </button>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button onclick="cycleSeniorLevel()" title="字體大小" class="h-9 px-2 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl transition font-black text-[11px] flex items-center gap-1 shadow border border-slate-700 active:scale-95">
+                            <i class="fa-solid fa-magnifying-glass-plus text-amber-400"></i>
+                            <span id="fontBtnText">1.0x</span>
+                        </button>
+
+                        <button onclick="openInstallModal()" title="加至桌面" class="h-9 px-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-black text-[11px] flex items-center gap-1 shadow border border-amber-300 active:scale-95">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                            <span>桌面</span>
+                        </button>
+
+                        <button onclick="fetchAllData(true)" title="更新" class="h-9 w-9 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-xl transition font-black text-xs flex items-center justify-center shadow-sm active:scale-95 border border-emerald-400/30">
+                            <i class="fa-solid fa-rotate-right text-xs" id="refresh-icon"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="mt-2 pt-2 border-t border-slate-800/80 grid grid-cols-3 gap-2">
-                    <button onclick="openGmb44SubApp()" class="h-9 bg-emerald-800/90 hover:bg-emerald-700 text-amber-300 rounded-xl transition font-black text-xs flex items-center justify-center gap-1.5 shadow border border-emerald-500/40 active:scale-95">
-                        <i class="fa-solid fa-van-shuttle text-amber-400"></i>
-                        <span>44 翠寧專線</span>
+                <!-- 類別篩選欄 (header內，4x2網格，全部顯示不滑動) -->
+                <div class="mt-2 pt-2 border-t border-slate-800/80 grid grid-cols-4 gap-1.5">
+                    <button onclick="setTab('all')" id="tab-all" class="tab-btn bg-emerald-600 text-white px-1 py-2 rounded-lg transition shadow-sm text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-border-all"></i><span>全部</span>
                     </button>
-
-                    <button onclick="cycleSeniorLevel()" class="h-9 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl transition font-black text-xs flex items-center justify-center gap-1.5 shadow border border-slate-700 active:scale-95">
-                        <i class="fa-solid fa-magnifying-glass-plus text-amber-400"></i>
-                        <span id="fontBtnText">字體 1.0x</span>
+                    <button onclick="setTab('fav')" id="tab-fav" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-star text-amber-400"></i><span>最愛 <span id="fav-count" class="bg-slate-700 px-1 rounded-full text-[10px]">0</span></span>
                     </button>
-
-                    <button onclick="openInstallModal()" class="h-9 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl transition font-black text-xs flex items-center justify-center gap-1.5 shadow border border-amber-300 active:scale-95">
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-                        <span>加至桌面</span>
+                    <button onclick="setTab('siulun')" id="tab-siulun" class="tab-btn bg-slate-800 text-red-400 border border-red-500/40 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-bus-simple"></i><span>兆麟站</span>
+                    </button>
+                    <button onclick="setTab('lrt')" id="tab-lrt" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-train-tram text-blue-500"></i><span>輕鐵</span>
+                    </button>
+                    <button onclick="setTab('mtrbus')" id="tab-mtrbus" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-bus-simple text-amber-500"></i><span>港鐵巴士</span>
+                    </button>
+                    <button onclick="setTab('tml')" id="tab-tml" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-train-subway text-red-500"></i><span>屯馬綫</span>
+                    </button>
+                    <button onclick="setTab('gmb')" id="tab-gmb" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-van-shuttle text-emerald-500"></i><span>綠色小巴</span>
+                    </button>
+                    <button onclick="setTab('kmb')" id="tab-kmb" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-bus text-amber-500"></i><span>過境/城巴</span>
                     </button>
                 </div>
             </div>
         </header>
+
 
         <!-- 天文台實時天氣資訊欄 -->
         <div class="max-w-xl mx-auto px-3 pt-3 pb-1 w-full">
@@ -206,34 +229,6 @@
         </div>
 
         <main class="flex-1 max-w-xl w-full mx-auto px-3 space-y-3.5 pb-12">
-            <!-- 類別篩選欄 -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-3.5 shadow-md border border-slate-200 dark:border-slate-800">
-                <div class="flex gap-2 overflow-x-auto no-scrollbar py-0.5 touch-pan-x text-sm sm:text-base font-black">
-                    <button onclick="setTab('all')" id="tab-all" class="tab-btn flex-shrink-0 bg-emerald-600 text-white px-4 py-2.5 rounded-xl transition shadow-sm whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-border-all mr-1.5"></i>全部 All
-                    </button>
-                    <!-- 專屬兆麟站頁籤 -->
-                    <button onclick="setTab('siulun')" id="tab-siulun" class="tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-red-600 dark:text-red-400 border border-red-500/40 px-4 py-2.5 rounded-xl transition whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-bus-simple mr-1.5"></i>兆麟站 (九巴/龍運)
-                    </button>
-                    <button onclick="setTab('fav')" id="tab-fav" class="tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl transition whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-star text-amber-400 mr-1.5"></i>我的最愛 <span id="fav-count" class="ml-1 bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs">0</span>
-                    </button>
-                    <button onclick="setTab('lrt')" id="tab-lrt" class="tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl transition whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-train-tram text-blue-500 mr-1.5"></i>輕鐵
-                    </button>
-                    <button onclick="setTab('mtrbus')" id="tab-mtrbus" class="tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl transition whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-bus-simple text-amber-500 mr-1.5"></i>港鐵巴士
-                    </button>
-                    <button onclick="setTab('gmb')" id="tab-gmb" class="tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl transition whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-van-shuttle text-emerald-500 mr-1.5"></i>綠色小巴
-                    </button>
-                    <button onclick="setTab('kmb')" id="tab-kmb" class="tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl transition whitespace-nowrap active:scale-95">
-                        <i class="fa-solid fa-bus text-amber-500 mr-1.5"></i>過境 / 城巴 (B3/962X)
-                    </button>
-                </div>
-            </div>
-
             <!-- 系統狀態條 -->
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-sm font-extrabold flex justify-between items-center shadow-sm">
                 <span class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-black text-sm sm:text-base" id="sys-status">
@@ -252,7 +247,7 @@
             </div>
 
             <div class="bg-amber-50/90 dark:bg-slate-900/90 border border-amber-300 dark:border-amber-900/50 rounded-2xl p-3.5 text-xs sm:text-sm text-amber-950 dark:text-amber-200 leading-relaxed font-bold shadow-sm">
-                <p><i class="fa-solid fa-circle-info mr-1.5 text-amber-600 dark:text-amber-400 text-base"></i> <strong>提示：</strong>44 及 44B1 已永遠預設鎖定為「翠寧站」出發實時班次。兆麟專區涵蓋途經兆麟苑/老鼠洲之九巴及龍運全線。</p>
+                <p><i class="fa-solid fa-circle-info mr-1.5 text-amber-600 dark:text-amber-400 text-base"></i> <strong>提示：</strong>44 及 44B1 已永遠預設鎖定為「翠寧站」出發實時班次。兆麟專區涵蓋途經兆麟站/老鼠洲站之九巴及龍運全線。</p>
             </div>
         </main>
     </div>
@@ -318,7 +313,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.7</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.8.9</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -392,6 +387,9 @@
 
     <script>
 
+        // 綠Van官方API經專用代理 (CORS)，避免瀏覽器直接跨域被擋
+        const GMB_API_BASE = 'https://hengfuk-gmb-proxy-rb-1997s-projects.vercel.app/api/gmb-proxy?path=eta/route-stop/';
+
         // 路線核心設定庫：確保 44, 44B1, 43C, 140M, B3, 962X 以及兆麟全線無一遺漏
         const ROUTES = [
             // 🥇 505 輕鐵
@@ -404,8 +402,8 @@
                 dest_keyword: '兆康', 
                 label: '三聖 ➔ 屯門站 (往兆康)', 
                 label_en: 'Sam Shing ➔ Tuen Mun Sta. (to Siu Hong)',
-                group: '505 輕鐵 (去程：三聖開出)', 
-                group_en: '505 Light Rail (To Tuen Mun Sta.)',
+                group: '輕鐵505', 
+                group_en: 'Light Rail 505',
                 color: 'blue' 
             },
             { 
@@ -417,8 +415,8 @@
                 dest_keyword: '三聖', 
                 label: '屯門站 ➔ 三聖方向 (回程)', 
                 label_en: 'Tuen Mun Sta. ➔ Sam Shing (Return)',
-                group: '505 輕鐵 (回程：屯門站開)', 
-                group_en: '505 Light Rail (To Sam Shing)',
+                group: '輕鐵505', 
+                group_en: 'Light Rail 505',
                 color: 'orange' 
             },
 
@@ -432,8 +430,8 @@
                 stop_name: '恆福花園',
                 label: '往 屯門站 / 富泰',
                 label_en: 'To Tuen Mun Sta. / Fu Tai',
-                group: '港鐵接駁巴士 (K51 / K53)', 
-                group_en: 'MTR Feeder Bus (K51 / K53)',
+                group: '港鐵接駁巴士', 
+                group_en: 'MTR Feeder Bus',
                 color: 'amber' 
             },
             { 
@@ -444,8 +442,8 @@
                 stop_id: 'K51A-D150', 
                 label: '往 屯門站 / 富泰 (經掃管笏)',
                 label_en: 'To Tuen Mun Sta. / Fu Tai (via So Kwun Wat)',
-                group: '港鐵接駁巴士 (K51 / K53)', 
-                group_en: 'MTR Feeder Bus (K51 / K53)',
+                group: '港鐵接駁巴士', 
+                group_en: 'MTR Feeder Bus',
                 color: 'amber' 
             },
             { 
@@ -456,22 +454,22 @@
                 stop_id: 'K53-D110', 
                 label: '往 屯門站 (循環線)',
                 label_en: 'To Tuen Mun Sta. (Circular)',
-                group: '港鐵接駁巴士 (K51 / K53)', 
-                group_en: 'MTR Feeder Bus (K51 / K53)',
+                group: '港鐵接駁巴士', 
+                group_en: 'MTR Feeder Bus',
                 color: 'amber' 
             },
-            // 🥈➕ 港鐵接駁巴士 K52（老鼠洲/三聖一帶）及 506（兆麟苑 ➔ 屯門碼頭）
+            // 🥈➕ 港鐵接駁巴士 K52（老鼠洲/三聖一帶）及 506（兆麟站 ➔ 屯門碼頭）
             {
                 id: 'mtr-k52-out',
                 type: 'MTRBUS_REAL',
                 category: 'mtrbus',
                 route: 'K52',
                 stop_id: 'K52-nU070',
-                stop_name: '恆福花園 (輕鐵三聖站)',
-                label: '三聖站 ➔ 龍鼓灘 (K52)',
-                label_en: 'Sam Shing ➔ Lung Kwu Tan (K52)',
-                group: '港鐵接駁巴士 (K52 / 506)',
-                group_en: 'MTR Feeder Bus (K52 / 506)',
+                stop_name: '老鼠洲站',
+                label: '老鼠洲站 ➔ 龍鼓灘 (K52)',
+                label_en: 'Lo Shu Chau ➔ Lung Kwu Tan (K52)',
+                group: '港鐵接駁巴士',
+                group_en: 'MTR Feeder Bus',
                 color: 'amber'
             },
             {
@@ -480,11 +478,11 @@
                 category: 'mtrbus',
                 route: 'K52',
                 stop_id: 'K52-nD240',
-                stop_name: '恆福花園 (輕鐵三聖站)',
+                stop_name: '輕鐵三聖站',
                 label: '三聖站 ➔ 悅湖山莊 (經屯門碼頭)',
                 label_en: 'Sam Shing ➔ Yuet Wu Villa (via Ferry Pier)',
-                group: '港鐵接駁巴士 (K52 / 506)',
-                group_en: 'MTR Feeder Bus (K52 / 506)',
+                group: '港鐵接駁巴士',
+                group_en: 'MTR Feeder Bus',
                 color: 'amber'
             },
             {
@@ -493,17 +491,36 @@
                 category: 'mtrbus',
                 route: '506',
                 stop_id: '506-D010',
-                stop_name: '兆麟 (兆麟苑)',
-                label: '兆麟苑 ➔ 屯門碼頭 (506)',
-                label_en: 'Siu Lun Court ➔ Tuen Mun Ferry Pier (506)',
-                group: '港鐵接駁巴士 (K52 / 506)',
-                group_en: 'MTR Feeder Bus (K52 / 506)',
+                stop_name: '老鼠洲站',
+                label: '老鼠洲站 ➔ 屯門碼頭 (506)',
+                label_en: 'Lo Shu Chau ➔ Tuen Mun Ferry Pier (506)',
+                group: '港鐵接駁巴士',
+                group_en: 'MTR Feeder Bus',
                 color: 'amber'
+            },
+
+            // 🚇 屯馬綫（屯門站開出 ➔ 烏溪沙）：港鐵官方 Next Train API
+            {
+                id: 'tml-tum-wks',
+                lat: 22.3905,
+                lng: 113.9735,
+                type: 'TML_NEXT',
+                category: 'tml',
+                route: 'TML',
+                station: 'TUM',
+                stop_name: '屯門站',
+                label: '屯門站 ➔ 烏溪沙',
+                label_en: 'Tuen Mun ➔ Wu Kai Sha',
+                group: '屯馬綫',
+                group_en: 'Tuen Ma Line',
+                color: 'red'
             },
 
             // 🥉 綠色小巴：44（翠寧鎖定）、44B1（翠寧鎖定）、43C 與 140M 全面救回
             { 
                 id: 'gmb-44-tsuining', 
+                lat: 22.3845,
+                lng: 113.9788,
                 type: 'GMB_DIRECT', 
                 category: 'gmb',
                 route: '44', 
@@ -511,14 +528,16 @@
                 route_seq: 1,
                 stop_seq: 9, // 海珠路翠寧花園
                 stop_name: '海珠路 (翠寧花園 - 翠寧站)',
-                label: '翠寧花園 ➔ 上水站總站', 
+                label: '翠寧花園 ➔ 上水站總站 (44)', 
                 label_en: 'Tsui Ning Garden ➔ Sheung Shui Sta.',
-                group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
+                group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
                 color: 'emerald' 
             },
             { 
                 id: 'gmb-44b1-tsuining', 
+                lat: 22.3845,
+                lng: 113.9788,
                 type: 'GMB_DIRECT', 
                 category: 'gmb',
                 route: '44B1', 
@@ -526,63 +545,105 @@
                 route_seq: 2, // 44B1 去程路線序列
                 stop_seq: 9, // 海珠路翠寧花園
                 stop_name: '海珠路 (翠寧花園 - 翠寧站)',
-                label: '翠寧花園 ➔ 落馬洲(新田)', 
+                label: '翠寧花園 ➔ 落馬洲(新田) (44B1)', 
                 label_en: 'Tsui Ning Garden ➔ Lok Ma Chau (San Tin)',
-                group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
+                group: '綠色專線小巴', 
+                group_en: 'Green Minibus Routes',
+                color: 'emerald' 
+            },
+            { 
+                id: 'gmb-44b-tuenmun', 
+                lat: 22.3905,
+                lng: 113.9735,
+                type: 'GMB_DIRECT', 
+                category: 'gmb',
+                route: '44B', 
+                route_id: 2004164,
+                route_seq: 2, // 44B 去程路線序列
+                stop_seq: 1, // 屯門站總站
+                stop_name: '屯門站總站',
+                label: '屯門站 ➔ 落馬洲(新田) (44B)', 
+                label_en: 'Tuen Mun Sta. ➔ Lok Ma Chau (San Tin) (44B)',
+                group: '綠色專線小巴', 
+                group_en: 'Green Minibus Routes',
+                color: 'emerald' 
+            },
+            { 
+                id: 'gmb-n44b-tsuining', 
+                lat: 22.3845,
+                lng: 113.9788,
+                type: 'GMB_DIRECT', 
+                category: 'gmb',
+                route: 'N44B', 
+                route_id: 2004165,
+                route_seq: 2, // N44B 去程路線序列 (通宵線)
+                stop_seq: 9, // 海珠路翠寧花園
+                stop_name: '海珠路 (翠寧花園 - 翠寧站)',
+                label: '翠寧花園 ➔ 落馬洲管制站 (N44B 通宵)', 
+                label_en: 'Tsui Ning Garden ➔ Lok Ma Chau Control Pt (N44B Overnight)',
+                group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
                 color: 'emerald' 
             },
             { 
                 id: 'gmb-43c-out', 
+                lat: 22.382347,
+                lng: 113.977345,
                 type: 'GMB_43C', 
                 category: 'gmb',
                 route: '43C', 
                 route_seq: 1,
                 stop_seq: 8,
-                stop_title: '三聖巴士總站 (往兆麟苑）',
-                label: '三聖總站 ➔ 兆麟苑', 
+                stop_title: '三聖巴士總站 (往兆麟站）',
+                label: '三聖總站 ➔ 兆麟站 (43C)', 
                 label_en: 'Sam Shing Terminus ➔ Siu Lun Court',
-                group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
+                group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
                 color: 'emerald' 
             },
             { 
                 id: 'gmb-43c-in', 
+                lat: 22.391,
+                lng: 113.979,
                 type: 'GMB_43C', 
                 category: 'gmb',
                 route: '43C', 
                 route_seq: 1,
                 stop_seq: 1,
-                stop_title: '屯門新墟街市 (43C 往兆麟苑，途經三聖）',
-                label: '屯門新墟街市 ➔ 三聖總站', 
+                stop_title: '屯門新墟街市 (43C 往兆麟站，途經三聖）',
+                label: '屯門新墟街市 ➔ 三聖總站 (43C)', 
                 label_en: 'San Hui Market ➔ Sam Shing Terminus',
-                group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
+                group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
                 color: 'emerald' 
             },
             { 
                 id: 'gmb-140m-out', 
+                lat: 22.382347,
+                lng: 113.977345,
                 type: 'GMB_140M', 
                 category: 'gmb',
                 route: '140M', 
                 route_seq: 1,
                 stop_seq: 1,
-                label: '三聖總站 ➔ 青衣站', 
+                label: '三聖總站 ➔ 青衣站 (140M)', 
                 label_en: 'Sam Shing Terminus ➔ Tsing Yi Station',
-                group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
+                group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
                 color: 'darkemerald' 
             },
             { 
                 id: 'gmb-140m-in', 
+                lat: 22.3585,
+                lng: 114.1065,
                 type: 'GMB_140M', 
                 category: 'gmb',
                 route: '140M', 
                 route_seq: 2,
                 stop_seq: 1,
-                label: '青衣站總站 ➔ 屯門(三聖)', 
+                label: '青衣站總站 ➔ 屯門(三聖) (140M)', 
                 label_en: 'Tsing Yi Sta. Terminus ➔ Sam Shing',
-                group: '綠色專線小巴 (44 / 44B1 / 43C / 140M)', 
+                group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
                 color: 'darkemerald' 
             },
@@ -617,19 +678,19 @@
                 color: 'red'
             },
 
-            // 🚩【兆麟苑 ➔ 荃灣 / 九龍 / 機場】：17 條九巴/龍運線，全部用官方 API 逐條核實（九巴站牌 TM614／龍運站牌 TM615，各自 ID 不同）
+            // 🚩【兆麟站 ➔ 荃灣 / 九龍 / 機場】：17 條九巴/龍運線，全部用官方 API 逐條核實（九巴站牌 TM614／龍運站牌 TM615，各自 ID 不同）
             {
                 id: 'kmb-60m',
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '60M',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 4
+                stop_name: '老鼠洲站',
                 label: '往 荃灣站',
                 label_en: 'To Tsuen Wan Station',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -637,13 +698,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '60X',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 3
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 3
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 3
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 3
+                stop_name: '老鼠洲站',
                 label: '往 西九龍站',
                 label_en: 'To West Kowloon Station',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -651,13 +712,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '61X',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 3
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 3
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 3
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 3
+                stop_name: '老鼠洲站',
                 label: '往 九龍城碼頭',
                 label_en: 'To Kowloon City Ferry',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -665,13 +726,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '62P',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 3
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 3
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 3
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 3
+                stop_name: '老鼠洲站',
                 label: '往 鯉魚門邨',
                 label_en: 'To Lei Yue Mun Estate',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -679,13 +740,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '62X',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 7
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 7
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 7
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 7
+                stop_name: '老鼠洲站',
                 label: '往 鯉魚門邨',
                 label_en: 'To Lei Yue Mun Estate',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -693,13 +754,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '259S',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 8
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 8
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 8
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 8
+                stop_name: '老鼠洲站',
                 label: '往 觀塘碼頭',
                 label_en: 'To Kwun Tong Ferry',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -707,13 +768,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '263',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 4
+                stop_name: '老鼠洲站',
                 label: '往 沙田站',
                 label_en: 'To Sha Tin Station',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -721,13 +782,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '263A',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 4
+                stop_name: '老鼠洲站',
                 label: '往 香港科學園',
                 label_en: 'To Hong Kong Science Park',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -735,13 +796,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '263B',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 4
+                stop_name: '老鼠洲站',
                 label: '往 火炭 (山尾街)',
                 label_en: 'To Fo Tan (Shan Mei Street)',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -749,13 +810,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: '263C',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 4
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 4
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 4
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 4
+                stop_name: '老鼠洲站',
                 label: '往 香港教育大學',
                 label_en: 'To The Education University of Hong Kong',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -763,13 +824,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'N260',
-                bound: 'O', // 兆麟苑 (TM614)，outbound seq 21
-                stop_id: '07B714029E91FD81', // 兆麟苑 (TM614)，outbound seq 21
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM614)，outbound seq 21
+                stop_id: '07B714029E91FD81', // 兆麟站 (TM614)，outbound seq 21
+                stop_name: '老鼠洲站',
                 label: '往 美孚',
                 label_en: 'To Mei Foo',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -777,13 +838,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'A33X',
-                bound: 'O', // 兆麟苑 (TM615)，outbound seq 11
-                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 11
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM615)，outbound seq 11
+                stop_id: '1D44677AEFBA8773', // 兆麟站 (TM615)，outbound seq 11
+                stop_name: '老鼠洲站',
                 label: '往 機場 (地面運輸中心)',
                 label_en: 'To Airport (Ground Transportation Centre)',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -791,13 +852,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'E33',
-                bound: 'O', // 兆麟苑 (TM615)，outbound seq 3
-                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 3
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM615)，outbound seq 3
+                stop_id: '1D44677AEFBA8773', // 兆麟站 (TM615)，outbound seq 3
+                stop_name: '老鼠洲站',
                 label: '往 機場 (地面運輸中心)',
                 label_en: 'To Airport (Ground Transportation Centre)',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -805,13 +866,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'E37C',
-                bound: 'O', // 兆麟苑 (TM615)，outbound seq 19
-                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 19
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM615)，outbound seq 19
+                stop_id: '1D44677AEFBA8773', // 兆麟站 (TM615)，outbound seq 19
+                stop_name: '老鼠洲站',
                 label: '往 飛機維修區',
                 label_en: 'To Aircraft Maintenance Area',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -819,13 +880,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'R33',
-                bound: 'I', // 兆麟苑 (TM615)，inbound seq 4
-                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，inbound seq 4
-                stop_name: '兆麟苑',
+                bound: 'I', // 兆麟站 (TM615)，inbound seq 4
+                stop_id: '1D44677AEFBA8773', // 兆麟站 (TM615)，inbound seq 4
+                stop_name: '老鼠洲站',
                 label: '往 迪士尼樂園',
                 label_en: 'To Disneyland',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -833,13 +894,13 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'NA33',
-                bound: 'I', // 兆麟苑 (TM615)，inbound seq 21
-                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，inbound seq 21
-                stop_name: '兆麟苑',
+                bound: 'I', // 兆麟站 (TM615)，inbound seq 21
+                stop_id: '1D44677AEFBA8773', // 兆麟站 (TM615)，inbound seq 21
+                stop_name: '老鼠洲站',
                 label: '往 國泰城 (機場)',
                 label_en: 'To Cathay City (Airport)',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
             {
@@ -847,28 +908,28 @@
                 type: 'KMB_DIRECT',
                 category: 'siulun',
                 route: 'N30',
-                bound: 'O', // 兆麟苑 (TM615)，outbound seq 24
-                stop_id: '1D44677AEFBA8773', // 兆麟苑 (TM615)，outbound seq 24
-                stop_name: '兆麟苑',
+                bound: 'O', // 兆麟站 (TM615)，outbound seq 24
+                stop_id: '1D44677AEFBA8773', // 兆麟站 (TM615)，outbound seq 24
+                stop_name: '老鼠洲站',
                 label: '往 機場 (暢達路)',
                 label_en: 'To Airport (Cheong Tat Road)',
-                group: '兆麟苑 ➔ 荃灣 / 九龍 / 機場',
-                group_en: 'Siu Lun Court ➔ Tsuen Wan / Kowloon / Airport',
+                group: '兆麟站',
+                group_en: 'Siu Lun Court',
                 color: 'red'
             },
 
-            // 🏝️【老鼠洲兒童遊樂場】：九巴 260C、261（站牌 TM690）＋ 城巴 962 系往港島、B3 往深圳灣口岸（站牌 1922A；stop_id 全部用官方 API 核實）
+            // 🏝️【老鼠洲站】：九巴 260C、261（站牌 TM690）＋ 城巴 962 系往港島、B3 往深圳灣口岸（站牌 1922A；stop_id 全部用官方 API 核實）
             {
                 id: 'kmb-260c-mouse',
                 type: 'KMB_DIRECT',
                 category: 'kmb',
                 route: '260C',
-                bound: 'I', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 14
-                stop_id: 'E105131B41FBAF33', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 14
-                stop_name: '老鼠洲兒童遊樂場',
+                bound: 'I', // 老鼠洲站 (TM690)，inbound seq 14
+                stop_id: 'E105131B41FBAF33', // 老鼠洲站 (TM690)，inbound seq 14
+                stop_name: '老鼠洲站',
                 label: '往 屯門 (三聖邨)',
                 label_en: 'To Tuen Mun (Sam Shing Estate)',
-                group: '老鼠洲兒童遊樂場',
+                group: '老鼠洲站',
                 group_en: 'Mouse Island Children\'s Playground',
                 color: 'red'
             },
@@ -877,12 +938,12 @@
                 type: 'KMB_DIRECT',
                 category: 'kmb',
                 route: '261',
-                bound: 'I', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 23
-                stop_id: 'E105131B41FBAF33', // 老鼠洲兒童遊樂場 (TM690)，inbound seq 23
-                stop_name: '老鼠洲兒童遊樂場',
+                bound: 'I', // 老鼠洲站 (TM690)，inbound seq 23
+                stop_id: 'E105131B41FBAF33', // 老鼠洲站 (TM690)，inbound seq 23
+                stop_name: '老鼠洲站',
                 label: '往 屯門 (三聖邨)',
                 label_en: 'To Tuen Mun (Sam Shing Estate)',
-                group: '老鼠洲兒童遊樂場',
+                group: '老鼠洲站',
                 group_en: 'Mouse Island Children\'s Playground',
                 color: 'red'
             },
@@ -894,7 +955,7 @@
                 stop_id: '001922',
                 label: '往 銅鑼灣 (摩頓台)',
                 label_en: 'To Causeway Bay (Moreton Terrace)',
-                group: '老鼠洲兒童遊樂場',
+                group: '老鼠洲站',
                 group_en: 'Mouse Island Children\'s Playground',
                 color: 'rose'
             },
@@ -906,7 +967,7 @@
                 stop_id: '001922',
                 label: '往 銅鑼灣 (摩頓台)',
                 label_en: 'To Causeway Bay (Moreton Terrace)',
-                group: '老鼠洲兒童遊樂場',
+                group: '老鼠洲站',
                 group_en: 'Mouse Island Children\'s Playground',
                 color: 'rose'
             },
@@ -918,7 +979,7 @@
                 stop_id: '001922',
                 label: '往 太古 (康怡廣場)',
                 label_en: 'To Tai Koo (Kornhill Plaza)',
-                group: '老鼠洲兒童遊樂場',
+                group: '老鼠洲站',
                 group_en: 'Mouse Island Children\'s Playground',
                 color: 'rose'
             },
@@ -930,7 +991,7 @@
                 stop_id: '001922',
                 label: '往 銅鑼灣 (摩頓台) (通宵)',
                 label_en: 'To Causeway Bay (Moreton Terrace) (Overnight)',
-                group: '老鼠洲兒童遊樂場',
+                group: '老鼠洲站',
                 group_en: 'Mouse Island Children\'s Playground',
                 color: 'rose'
             },
@@ -939,11 +1000,11 @@
                 type: 'CTB_DIRECT',
                 category: 'kmb',
                 route: 'B3',
-                stop_id: '001922', // 老鼠洲兒童遊樂場, 海榮路
+                stop_id: '001922', // 老鼠洲站, 海榮路
                 label: '往 深圳灣口岸 (經老鼠洲)',
                 label_en: 'To Shenzhen Bay Port (via Mouse Island)',
-                group: '老鼠洲兒童遊樂場',
-                group_en: "Mouse Island Children\'s Playground",
+                group: 'B3 深圳灣口岸專線',
+                group_en: 'B3 Cross-Boundary Bus',
                 color: 'amber'
             },
             {
@@ -954,7 +1015,7 @@
                 stop_id: '003208', // 深圳灣口岸總站代碼
                 label: '由深圳灣口岸開出 ➔ 屯門碼頭',
                 label_en: 'From Shenzhen Bay Port ➔ Tuen Mun Ferry',
-                group: 'B3 過境專線 (深圳灣)',
+                group: 'B3 深圳灣口岸專線',
                 group_en: 'B3 Cross-Boundary Bus',
                 color: 'amber'
             }
@@ -963,12 +1024,31 @@
         // 🚇 505 輕鐵「三聖 ↔ 屯門站」專屬精準站頭清單 (去程順序)
         // 註：兆麟正確編號為 265 (260 實為豐景園，505 不停靠 — 已用港鐵實時 API 實測核實)
         const LRT_505_STATIONS = [
-            { id: '920', name: '三聖總站', en: 'Sam Shing Terminus' },
-            { id: '265', name: '兆麟', en: 'Siu Lun' },
-            { id: '270', name: '安定', en: 'On Ting' },
-            { id: '280', name: '市中心', en: 'Town Centre' },
-            { id: '295', name: '屯門站', en: 'Tuen Mun' },
+            { id: '920', name: '三聖總站', en: 'Sam Shing Terminus', lat: 22.382347, lng: 113.977345 },
+            { id: '265', name: '兆麟', en: 'Siu Lun', lat: 22.384918, lng: 113.975370 },
+            { id: '270', name: '安定', en: 'On Ting', lat: 22.3865, lng: 113.9775 },
+            { id: '280', name: '市中心', en: 'Town Centre', lat: 22.3895, lng: 113.9785 },
+            { id: '295', name: '屯門站', en: 'Tuen Mun', lat: 22.3905, lng: 113.9735 },
         ];
+        // 🗺️ 各站 Google 地圖座標 (KMB/城巴為官方 API 實測；MTR巴士/綠Van/輕鐵為同區核實座標)
+        const STOP_MAP_COORDS = {
+            // KMB (data.etabus.gov.hk 官方)
+            'A3658E938F378588': [22.382347, 113.977345],
+            'A2586669ADE21A28': [22.382310, 113.977442],
+            '07B714029E91FD81': [22.384918, 113.975370],
+            '1D44677AEFBA8773': [22.384297, 113.975334],
+            'E105131B41FBAF33': [22.382919, 113.976175],
+            // 城巴 (rt.data.gov.hk 官方)
+            '001922': [22.382870572091, 113.97629109053],
+            '003208': [22.501662252091, 113.94518812053],
+            // 港鐵巴士 (同區站位)
+            'K51-D140': [22.3832, 113.9782],
+            'K51A-D150': [22.3832, 113.9782],
+            'K53-D110': [22.3832, 113.9782],
+            'K52-nU070': [22.382919, 113.976175],
+            'K52-nD240': [22.382347, 113.977345],
+            '506-D010': [22.382919, 113.976175],
+        };
         // 各 505 卡片當前鎖定的站頭：去程預設三聖總站 / 回程預設屯門站
         const LRT_505_SEL = { 'lrt-505-out': '920', 'lrt-505-in': '295' };
         // 取某卡片的膠囊按鈕順序 (去程：三聖➔屯門站；回程：屯門站➔三聖)
@@ -1017,7 +1097,7 @@
                         { seq: 2, name: '紅橋 (新和里遊樂場)', eng: 'Hung Kiu, San Wo Lane', icon: '🌉' },
                         { seq: 3, name: '屯門市中心 (巴士總站)', eng: 'Tuen Mun Town Centre B/T', icon: '🏢' },
                         { seq: 4, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate, TM Rural Wui Rd', icon: '❤️' },
-                        { seq: 5, name: '兆麟苑 (屯門鄉事會路)', eng: 'Siu Lun Court, TM Rural Wui Rd', icon: '🏘️' },
+                        { seq: 5, name: '兆麟站 (屯門鄉事會路)', eng: 'Siu Lun Court, TM Rural Wui Rd', icon: '🏘️' },
                         { seq: 6, name: '海珠路 (豐景園)', eng: 'Goodview Garden, Hoi Chu Rd', icon: '🏘️' },
                         { seq: 7, name: '皇珠路 (龍逸邨)', eng: 'Lung Yat Estate, Wong Chu Rd', icon: '🏘️' },
                         { seq: 8, name: '龍門路 (富健花園)', eng: 'Glorious Garden, Lung Mun Rd', icon: '🏘️' },
@@ -1069,7 +1149,7 @@
                         { seq: 1, name: '落馬洲 (新田) 總站', eng: 'Lok Ma Chau (San Tin)', icon: '🚌' },
                         { seq: 2, name: '屯門市中心 (巴士總站)', eng: 'Tuen Mun Town Centre', icon: '🏢' },
                         { seq: 3, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '❤️' },
-                        { seq: 4, name: '兆麟苑 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
+                        { seq: 4, name: '兆麟站 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
                         { seq: 5, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
                         { seq: 6, name: '龍門路 (富健花園)', eng: 'Glorious Garden', icon: '🏘️' },
                         { seq: 7, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
@@ -1202,7 +1282,7 @@
                         { seq: 15, name: '震寰路 (屯門警署)', eng: 'Tuen Mun Police HQ', icon: '🏠' },
                         { seq: 16, name: '屯門站 (公共運輸交匯處)', eng: 'Tuen Mun Station', icon: '🏢' },
                         { seq: 17, name: '安定邨 (屯門鄉事會路)', eng: 'On Ting Estate', icon: '❤️' },
-                        { seq: 18, name: '兆麟苑 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
+                        { seq: 18, name: '兆麟站 (屯門鄉事會路)', eng: 'Siu Lun Court', icon: '🏘️' },
                         { seq: 19, name: '海珠路 (豐景園)', eng: 'Goodview Garden', icon: '🏘️' },
                         { seq: 20, name: '龍門路 (富健花園)', eng: 'Glorious Garden', icon: '🏘️' },
                         { seq: 21, name: '龍門路 (新屯門中心)', eng: 'Sun Tuen Mun Centre', icon: '🏘️' },
@@ -1281,7 +1361,7 @@
             body.classList.remove('senior-lvl-0', 'senior-lvl-1', 'senior-lvl-2', 'senior-lvl-3', 'senior-lvl-4');
             body.classList.add(`senior-lvl-${level}`);
 
-            const labels = ['字體 1.0x', '字體 1.15x', '字體 1.3x', '字體 1.45x', '字體 1.6x'];
+            const labels = ['1.0x', '1.15x', '1.3x', '1.45x', '1.6x'];
             const fontBtnText = document.getElementById('fontBtnText');
             if (fontBtnText) fontBtnText.innerText = labels[level];
         }
@@ -1459,7 +1539,7 @@
 
                 try {
                     const routeSeq = (route.etaRouteSeq && route.etaRouteSeq[subAppDirection]) || ((subAppDirection === 'outbound') ? 1 : 2);
-                    const apiUrl = `https://data.etagmb.gov.hk/eta/route-stop/${route.routeId}/${routeSeq}/${activeStopObj.seq}`;
+                    const apiUrl = `${GMB_API_BASE}${route.routeId}/${routeSeq}/${activeStopObj.seq}`;
 
                     let rawEtas = await fetchGMBEtaHonest(apiUrl);
                     rawEtas.sort((a, b) => a.diff - b.diff);
@@ -1779,17 +1859,17 @@
             activeTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 if (btn.id === 'tab-siulun') {
-                    btn.className = 'tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-red-600 dark:text-red-400 border border-red-500/40 px-4 py-2.5 rounded-xl transition whitespace-nowrap text-sm sm:text-base font-black active:scale-95';
+                    btn.className = 'tab-btn bg-slate-800 text-red-400 border border-red-500/40 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1';
                 } else {
-                    btn.className = 'tab-btn flex-shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2.5 rounded-xl transition whitespace-nowrap text-sm sm:text-base font-black active:scale-95';
+                    btn.className = 'tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1';
                 }
             });
             const activeBtn = document.getElementById(`tab-${tab}`);
             if (activeBtn) {
                 if (tab === 'siulun') {
-                    activeBtn.className = 'tab-btn flex-shrink-0 bg-red-600 text-white px-4 py-2.5 rounded-xl transition shadow-lg whitespace-nowrap text-sm sm:text-base font-black active:scale-95 border border-red-400';
+                    activeBtn.className = 'tab-btn bg-red-600 text-white border border-red-400 px-1 py-2 rounded-lg transition shadow-lg text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1';
                 } else {
-                    activeBtn.className = 'tab-btn flex-shrink-0 bg-emerald-600 text-white px-4 py-2.5 rounded-xl transition shadow-sm whitespace-nowrap text-sm sm:text-base font-black active:scale-95';
+                    activeBtn.className = 'tab-btn bg-emerald-600 text-white px-1 py-2 rounded-lg transition shadow-sm text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1';
                 }
             }
             renderUI();
@@ -1828,9 +1908,10 @@
 
             let html = '';
             groupOrder.forEach(groupName => {
-                const isSiuLunGroup = groupName.includes('兆麟苑');
+                const isSiuLunGroup = groupName.includes('兆麟站');
                 let icon = isSiuLunGroup ? 'fa-bus-simple text-amber-300'
                     : groupName.includes('輕鐵') ? 'fa-train-tram' 
+                    : groupName.includes('屯馬綫') ? 'fa-train-subway text-red-500'
                     : groupName.includes('接駁') ? 'fa-bus-simple' 
                     : groupName.includes('小巴') ? 'fa-van-shuttle'
                     : groupName.includes('隧巴') ? 'fa-ferry' 
@@ -1893,7 +1974,7 @@
                     } else if (item.id === 'gmb-44-tsuining' || item.id === 'gmb-44b1-tsuining') {
                         subLabel = `<span class="text-xs bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-200 font-black px-2.5 py-0.5 rounded-full border border-emerald-400">⭐ 翠寧花園開出 Tsui Ning</span>`;
                     } else if (item.category === 'siulun') {
-                        subLabel = `<span class="text-xs bg-red-100 dark:bg-red-900/40 text-red-900 dark:text-red-200 font-black px-2 py-0.5 rounded-full border border-red-300/60">兆麟/老鼠洲 Siu Lun</span>`;
+                        subLabel = `<span class="text-xs bg-red-100 dark:bg-red-900/40 text-red-900 dark:text-red-200 font-black px-2 py-0.5 rounded-full border border-red-300/60">兆麟站/老鼠洲站 Siu Lun</span>`;
                     } else if (item.type === 'MTRBUS_REAL') {
                         subLabel = `<span class="text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 font-extrabold px-2.5 py-0.5 rounded-full border border-amber-300/60">恆福站 Hanford</span>`;
                     } else if (item.id === 'lrt-505-out') {
@@ -1972,7 +2053,20 @@
             else if (stopName && stopName.includes('深圳灣')) stopNameEn = 'Shenzhen Bay Port';
 
             if (stopName) {
-                nameEl.innerHTML = `📍 ${stopName} ${stopNameEn ? `<span class="text-xs font-normal text-slate-500 dark:text-slate-400 block">${stopNameEn}</span>` : ''}`;
+                // 🗺️ 找出此站座標 (卡片 lat/lng → STOP_MAP_COORDS → 輕鐵站表)
+                let mapLat = null, mapLng = null;
+                const routeItem = (typeof ROUTES !== 'undefined') ? ROUTES.find(r => r.id === id) : null;
+                if (routeItem && routeItem.lat && routeItem.lng) {
+                    mapLat = routeItem.lat; mapLng = routeItem.lng;
+                } else if (routeItem && routeItem.stop_id && STOP_MAP_COORDS[routeItem.stop_id]) {
+                    [mapLat, mapLng] = STOP_MAP_COORDS[routeItem.stop_id];
+                } else if (lrtMeta && lrtMeta.lat) {
+                    mapLat = lrtMeta.lat; mapLng = lrtMeta.lng;
+                }
+                const mapBtn = (mapLat && mapLng)
+                    ? ` <a href="https://www.google.com/maps/search/?api=1&query=${mapLat},${mapLng}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-[11px] font-black text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-2 py-0.5 rounded-full ml-1 align-middle no-underline" title="在 Google 地圖開啟"><i class="fa-solid fa-map-location-dot"></i>地圖</a>`
+                    : '';
+                nameEl.innerHTML = `📍 ${stopName}${mapBtn} ${stopNameEn ? `<span class="text-xs font-normal text-slate-500 dark:text-slate-400 block">${stopNameEn}</span>` : ''}`;
                 nameEl.className = `text-sm text-slate-900 dark:text-slate-100 font-black bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 inline-block px-2.5 py-1 rounded-lg mt-2`;
             } else {
                 nameEl.innerHTML = `❌ 暫無班次 <span class="text-xs font-normal text-red-500 block">No Bus</span>`;
@@ -2109,6 +2203,41 @@
             if (item) fetchLRTDir(item);
         }
 
+        // 🚇 屯馬綫 Next Train（港鐵官方）：屯門站 ➔ 烏溪沙。官方 API 偶有短暫回空，最多試 3 次（退避重試），仍無則如實回傳空陣列 (絕不偽造班次時間)
+        async function fetchTMLNext(item) {
+            const stopName = '屯門站';
+            const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TML&sta=TUM`;
+            let rawEtas = [];
+            for (let attempt = 0; attempt < 3 && rawEtas.length === 0; attempt++) {
+                if (attempt > 0) await new Promise(r => setTimeout(r, 1200 * attempt));
+                try {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const data = await res.json();
+                        const info = data && data.data && data.data['TML-TUM'];
+                        if (info) {
+                            const trains = [].concat(info.UP || []).concat(info.DOWN || [])
+                                .filter(t => t && t.valid === 'Y' && t.time);
+                            trains.sort((a, b) => parseInt(a.seq || 0, 10) - parseInt(b.seq || 0, 10));
+                            trains.forEach(t => {
+                                let mins = parseInt(t.ttnt, 10);
+                                if (isNaN(mins)) mins = getMins(t.time);
+                                mins = Math.max(0, mins);
+                                const timeStr = typeof t.time === 'string' && t.time.length >= 16 ? t.time.slice(11, 16) : getEstimatedTimeStr(mins);
+                                rawEtas.push({
+                                    diff: mins,
+                                    time: timeStr,
+                                    remark: t.plat ? t.plat + '號月台' : ''
+                                });
+                            });
+                        }
+                    }
+                } catch (e) { /* 如實顯示暫無班次 */ }
+            }
+            rawEtas.sort((a, b) => a.diff - b.diff);
+            renderResult(item.id, stopName, rawEtas, item.color);
+        }
+
         async function fetchLRTDir(item) {
             try {
                 // 取該卡片當前鎖定的站頭 (預設：去程 920 三聖總站 / 回程 295 屯門站)
@@ -2166,7 +2295,7 @@
         // 44 / 44B1 翠寧站專用抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMBDirect(item) {
             const stopTitle = item.stop_name || '海珠路 (翠寧花園 - 翠寧站)';
-            const url = `https://data.etagmb.gov.hk/eta/route-stop/${item.route_id}/${item.route_seq}/${item.stop_seq}`;
+            const url = `${GMB_API_BASE}${item.route_id}/${item.route_seq}/${item.stop_seq}`;
             const rawEtas = await fetchGMBEtaHonest(url);
             rawEtas.sort((a, b) => a.diff - b.diff);
             renderResult(item.id, stopTitle, rawEtas, item.color);
@@ -2212,8 +2341,8 @@
         async function fetchGMB43C(item) {
             const routeSeq = item.route_seq || 1;
             const stopSeq = item.stop_seq || 8;
-            const stopTitle = item.stop_title || (routeSeq === 1 && stopSeq === 1 ? '屯門新墟街市 (43C 往兆麟苑，途經三聖）' : '三聖巴士總站 (往兆麟苑）');
-            const url = `https://data.etagmb.gov.hk/eta/route-stop/2001636/${routeSeq}/${stopSeq}`;
+            const stopTitle = item.stop_title || (routeSeq === 1 && stopSeq === 1 ? '屯門新墟街市 (43C 往兆麟站，途經三聖）' : '三聖巴士總站 (往兆麟站）');
+            const url = `${GMB_API_BASE}2001636/${routeSeq}/${stopSeq}`;
             const rawEtas = await fetchGMBEtaHonest(url);
             rawEtas.sort((a, b) => a.diff - b.diff);
             renderResult(item.id, stopTitle, rawEtas, item.color);
@@ -2222,7 +2351,7 @@
         // 140M 專線小巴抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMB140M(item) {
             const stopTitle = item.route_seq === 1 ? '三聖巴士總站' : '青衣站專線小巴總站';
-            const url = `https://data.etagmb.gov.hk/eta/route-stop/2004598/${item.route_seq}/${item.stop_seq}`;
+            const url = `${GMB_API_BASE}2004598/${item.route_seq}/${item.stop_seq}`;
             const rawEtas = await fetchGMBEtaHonest(url);
             rawEtas.sort((a, b) => a.diff - b.diff);
             renderResult(item.id, stopTitle, rawEtas, item.color);
@@ -2291,8 +2420,8 @@
         async function fetchCTBDirect(item) {
             let stopName = '巴士站';
             if (item.stop_id === '003208') stopName = '深圳灣口岸總站';
-            else if (item.stop_id === '001922') stopName = '老鼠洲兒童遊樂場 (海榮路)';
-            else if (item.stop_id === '001140') stopName = item.route === 'B3' ? '老鼠洲兒童遊樂場 (兆麟)' : '恆福花園 / 三聖站';
+            else if (item.stop_id === '001922') stopName = '老鼠洲站 (海榮路)';
+            else if (item.stop_id === '001140') stopName = item.route === 'B3' ? '老鼠洲站' : '恆福花園 / 三聖站';
 
             const etas = await fetchCTBEtaHonest(item.stop_id, item.route);
             renderResult(item.id, stopName, etas, item.color);
@@ -2316,6 +2445,7 @@
                 if (item.type === 'KMB_DIRECT') return fetchKMBDirect(item);
                 if (item.type === 'CTB_DIRECT') return fetchCTBDirect(item);
                 if (item.type === 'LRT_DIR') return fetchLRTDir(item);
+                if (item.type === 'TML_NEXT') return fetchTMLNext(item);
                 if (item.type === 'MTRBUS_REAL') return fetchMTRBusReal(item);
                 if (item.type === 'GMB_43C') return fetchGMB43C(item);
                 if (item.type === 'GMB_140M') return fetchGMB140M(item);
