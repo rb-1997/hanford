@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.9.2) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.9.5) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.2</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.5</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -310,7 +310,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.2</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.5</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -519,9 +519,9 @@
                 route: '44', 
                 route_id: 2003966,
                 route_seq: 1,
-                stop_seq: 9, // 海珠路翠寧花園
+                stop_seq: 9, // 翠寧花園 (預設上車站)
                 stop_name: '海珠路 (翠寧花園 - 翠寧站)',
-                label: '翠寧花園 ➔ 上水站總站 (44)', 
+                label: '屯門碼頭 ➔ 上水站總站 (44)', 
                 label_en: 'Tsui Ning Garden ➔ Sheung Shui Sta.',
                 group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
@@ -534,9 +534,9 @@
                 route: '44B1', 
                 route_id: 2004197,
                 route_seq: 2, // 44B1 去程路線序列
-                stop_seq: 9, // 海珠路翠寧花園
+                stop_seq: 9, // 翠寧花園 (預設上車站)
                 stop_name: '海珠路 (翠寧花園 - 翠寧站)',
-                label: '翠寧花園 ➔ 落馬洲(新田) (44B1)', 
+                label: '屯門碼頭 ➔ 落馬洲(新田) (44B1)', 
                 label_en: 'Tsui Ning Garden ➔ Lok Ma Chau (San Tin)',
                 group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
@@ -564,9 +564,9 @@
                 route: 'N44B', 
                 route_id: 2004165,
                 route_seq: 2, // N44B 去程路線序列 (通宵線)
-                stop_seq: 9, // 海珠路翠寧花園
+                stop_seq: 9, // 翠寧花園 (預設上車站)
                 stop_name: '海珠路 (翠寧花園 - 翠寧站)',
-                label: '翠寧花園 ➔ 落馬洲管制站 (N44B 通宵)', 
+                label: '屯門碼頭 ➔ 落馬洲管制站 (N44B 通宵)', 
                 label_en: 'Tsui Ning Garden ➔ Lok Ma Chau Control Pt (N44B Overnight)',
                 group: '綠色專線小巴', 
                 group_en: 'Green Minibus Routes',
@@ -1100,6 +1100,28 @@
                 { seq: 25, name: '落馬洲 (新田) 交匯處' },
                 { seq: 26, name: '落馬洲管制站' },
             ],
+            'gmb-43c-out': [
+                { seq: 1, name: '河傍街 (屯門新墟街市外)' },
+                { seq: 2, name: '屯門鄉事會路 (德政圍外)' },
+                { seq: 3, name: '屯門鄉事會路 (時代廣場外)' },
+                { seq: 4, name: '屯門鄉事會路 (市中心巴士總站外)' },
+                { seq: 5, name: '屯興路 (仁愛分科診所外)' },
+                { seq: 6, name: '青山公路青山灣段 (恆順園第1座外)' },
+                { seq: 7, name: '青山公路青山灣段 (恆豐園外)' },
+                { seq: 8, name: '三聖巴士總站' },
+                { seq: 9, name: '兆興里 (博愛醫院屯門護養院外)' },
+            ],
+            'gmb-43c-in': [
+                { seq: 1, name: '河傍街 (屯門新墟街市外)' },
+                { seq: 2, name: '屯門鄉事會路 (德政圍外)' },
+                { seq: 3, name: '屯門鄉事會路 (時代廣場外)' },
+                { seq: 4, name: '屯門鄉事會路 (市中心巴士總站外)' },
+                { seq: 5, name: '屯興路 (仁愛分科診所外)' },
+                { seq: 6, name: '青山公路青山灣段 (恆順園第1座外)' },
+                { seq: 7, name: '青山公路青山灣段 (恆豐園外)' },
+                { seq: 8, name: '三聖巴士總站' },
+                { seq: 9, name: '兆興里 (博愛醫院屯門護養院外)' },
+            ],
         };
         // 各綠Van卡當前選擇嘅站 (預設值)
         const GMB_SEL = {
@@ -1107,6 +1129,8 @@
             'gmb-44b1-tsuining': 9,
             'gmb-44b-tuenmun': 1,
             'gmb-n44b-tsuining': 9,
+            'gmb-43c-out': 8,
+            'gmb-43c-in': 1,
         };
         // 取某卡片的膠囊按鈕順序 (去程：三聖➔屯門站；回程：屯門站➔三聖)
         function lrtPillOrder(itemId) {
@@ -2055,9 +2079,9 @@
                             <div id="pills-${item.id}" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">${buildLRTPills(item.id)}</div>
                         </div>`;
                     }
-                    // 🚐 綠Van：橫滑車站膠囊按鈕 (44/44B1/44B/N44B)
+                    // 🚐 綠Van：橫滑車站膠囊按鈕 (44/44B1/44B/N44B/43C)
                     let gmbPillsHtml = '';
-                    if (item.type === 'GMB_DIRECT' && GMB_STATIONS[item.id]) {
+                    if ((item.type === 'GMB_DIRECT' || item.type === 'GMB_43C') && GMB_STATIONS[item.id]) {
                         gmbPillsHtml = `
                         <div class="mt-2">
                             <div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mb-1 flex items-center gap-1"><i class="fa-solid fa-hand-pointer"></i> 點選切換上車站 <span class="font-normal opacity-80">Tap to switch boarding stop</span></div>
@@ -2428,10 +2452,13 @@
 
         // 43C 專線小巴抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMB43C(item) {
+            // 用滑動選站嘅選擇 (如有)，否則用卡片預設
+            const selSeq = (GMB_SEL && GMB_SEL[item.id]) || item.stop_seq || 8;
+            const stations = (typeof GMB_STATIONS !== 'undefined' && GMB_STATIONS[item.id]) || [];
+            const selStation = stations.find(s => s.seq === selSeq);
+            const stopTitle = selStation ? selStation.name : (item.stop_title || '三聖巴士總站 (往兆麟站）');
             const routeSeq = item.route_seq || 1;
-            const stopSeq = item.stop_seq || 8;
-            const stopTitle = item.stop_title || (routeSeq === 1 && stopSeq === 1 ? '屯門新墟街市 (43C 往兆麟站，途經三聖）' : '三聖巴士總站 (往兆麟站）');
-            const url = `${GMB_API_BASE}2001636/${routeSeq}/${stopSeq}`;
+            const url = `${GMB_API_BASE}2001636/${routeSeq}/${selSeq}`;
             const rawEtas = await fetchGMBEtaHonest(url);
             rawEtas.sort((a, b) => a.diff - b.diff);
             renderResult(item.id, stopTitle, rawEtas, item.color);
