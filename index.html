@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.8.9) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.9.2) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.8.9</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.2</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -145,19 +145,16 @@
                         <i class="fa-solid fa-bus-simple"></i><span>兆麟站</span>
                     </button>
                     <button onclick="setTab('lrt')" id="tab-lrt" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-train-tram text-blue-500"></i><span>輕鐵</span>
+                        <i class="fa-solid fa-train-tram text-blue-500"></i><span>輕鐵/屯馬綫</span>
                     </button>
                     <button onclick="setTab('mtrbus')" id="tab-mtrbus" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-bus-simple text-amber-500"></i><span>港鐵巴士</span>
-                    </button>
-                    <button onclick="setTab('tml')" id="tab-tml" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-train-subway text-red-500"></i><span>屯馬綫</span>
                     </button>
                     <button onclick="setTab('gmb')" id="tab-gmb" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-van-shuttle text-emerald-500"></i><span>綠色小巴</span>
                     </button>
                     <button onclick="setTab('kmb')" id="tab-kmb" class="tab-btn bg-slate-800 text-slate-300 border border-slate-700 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-bus text-amber-500"></i><span>過境/城巴</span>
+                        <i class="fa-solid fa-bus text-amber-500"></i><span>老鼠洲站/三聖總站</span>
                     </button>
                 </div>
             </div>
@@ -313,7 +310,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.8.9</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.2</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -419,6 +416,20 @@
                 group_en: 'Light Rail 505',
                 color: 'orange' 
             },
+            // 🚇 屯馬綫（屯門站開出 ➔ 烏溪沙）：港鐵官方 Next Train API
+            {
+                id: 'tml-tum-wks',
+                type: 'TML_NEXT',
+                category: 'lrt',
+                route: 'TML',
+                station: 'TUM',
+                stop_name: '屯門站',
+                label: '屯門站 ➔ 烏溪沙',
+                label_en: 'Tuen Mun ➔ Wu Kai Sha',
+                group: '屯馬綫',
+                group_en: 'Tuen Ma Line',
+                color: 'red'
+            },
 
             // 🥈 港鐵接駁巴士
             { 
@@ -462,14 +473,14 @@
             {
                 id: 'mtr-k52-out',
                 type: 'MTRBUS_REAL',
-                category: 'mtrbus',
+                category: 'kmb',
                 route: 'K52',
                 stop_id: 'K52-nU070',
                 stop_name: '老鼠洲站',
                 label: '老鼠洲站 ➔ 龍鼓灘 (K52)',
                 label_en: 'Lo Shu Chau ➔ Lung Kwu Tan (K52)',
-                group: '港鐵接駁巴士',
-                group_en: 'MTR Feeder Bus',
+                group: '老鼠洲站',
+                group_en: 'Mouse Island',
                 color: 'amber'
             },
             {
@@ -488,39 +499,21 @@
             {
                 id: 'mtr-506-pier',
                 type: 'MTRBUS_REAL',
-                category: 'mtrbus',
+                category: 'kmb',
                 route: '506',
                 stop_id: '506-D010',
                 stop_name: '老鼠洲站',
                 label: '老鼠洲站 ➔ 屯門碼頭 (506)',
                 label_en: 'Lo Shu Chau ➔ Tuen Mun Ferry Pier (506)',
-                group: '港鐵接駁巴士',
-                group_en: 'MTR Feeder Bus',
+                group: '老鼠洲站',
+                group_en: 'Mouse Island',
                 color: 'amber'
             },
 
-            // 🚇 屯馬綫（屯門站開出 ➔ 烏溪沙）：港鐵官方 Next Train API
-            {
-                id: 'tml-tum-wks',
-                lat: 22.3905,
-                lng: 113.9735,
-                type: 'TML_NEXT',
-                category: 'tml',
-                route: 'TML',
-                station: 'TUM',
-                stop_name: '屯門站',
-                label: '屯門站 ➔ 烏溪沙',
-                label_en: 'Tuen Mun ➔ Wu Kai Sha',
-                group: '屯馬綫',
-                group_en: 'Tuen Ma Line',
-                color: 'red'
-            },
 
             // 🥉 綠色小巴：44（翠寧鎖定）、44B1（翠寧鎖定）、43C 與 140M 全面救回
             { 
                 id: 'gmb-44-tsuining', 
-                lat: 22.3845,
-                lng: 113.9788,
                 type: 'GMB_DIRECT', 
                 category: 'gmb',
                 route: '44', 
@@ -536,8 +529,6 @@
             },
             { 
                 id: 'gmb-44b1-tsuining', 
-                lat: 22.3845,
-                lng: 113.9788,
                 type: 'GMB_DIRECT', 
                 category: 'gmb',
                 route: '44B1', 
@@ -553,8 +544,6 @@
             },
             { 
                 id: 'gmb-44b-tuenmun', 
-                lat: 22.3905,
-                lng: 113.9735,
                 type: 'GMB_DIRECT', 
                 category: 'gmb',
                 route: '44B', 
@@ -570,8 +559,6 @@
             },
             { 
                 id: 'gmb-n44b-tsuining', 
-                lat: 22.3845,
-                lng: 113.9788,
                 type: 'GMB_DIRECT', 
                 category: 'gmb',
                 route: 'N44B', 
@@ -587,8 +574,6 @@
             },
             { 
                 id: 'gmb-43c-out', 
-                lat: 22.382347,
-                lng: 113.977345,
                 type: 'GMB_43C', 
                 category: 'gmb',
                 route: '43C', 
@@ -603,8 +588,6 @@
             },
             { 
                 id: 'gmb-43c-in', 
-                lat: 22.391,
-                lng: 113.979,
                 type: 'GMB_43C', 
                 category: 'gmb',
                 route: '43C', 
@@ -619,8 +602,6 @@
             },
             { 
                 id: 'gmb-140m-out', 
-                lat: 22.382347,
-                lng: 113.977345,
                 type: 'GMB_140M', 
                 category: 'gmb',
                 route: '140M', 
@@ -634,8 +615,6 @@
             },
             { 
                 id: 'gmb-140m-in', 
-                lat: 22.3585,
-                lng: 114.1065,
                 type: 'GMB_140M', 
                 category: 'gmb',
                 route: '140M', 
@@ -673,6 +652,20 @@
                 stop_name: '三聖總站',
                 label: '往 荔景 (北)',
                 label_en: 'To Lai King (North)',
+                group: '三聖總站',
+                group_en: 'Sam Shing Bus Terminus',
+                color: 'red'
+            },
+            {
+                id: 'kmb-260c-samshing',
+                type: 'KMB_DIRECT',
+                category: 'kmb',
+                route: '260C',
+                bound: 'O', // 三聖總站 (TM986)，outbound seq 1 (總站開出)
+                stop_id: '4B6E603162A11A02', // 三聖總站 (TM986)，outbound seq 1
+                stop_name: '三聖總站',
+                label: '往 葵芳站',
+                label_en: 'To Kwai Fong Station',
                 group: '三聖總站',
                 group_en: 'Sam Shing Bus Terminus',
                 color: 'red'
@@ -1024,33 +1017,97 @@
         // 🚇 505 輕鐵「三聖 ↔ 屯門站」專屬精準站頭清單 (去程順序)
         // 註：兆麟正確編號為 265 (260 實為豐景園，505 不停靠 — 已用港鐵實時 API 實測核實)
         const LRT_505_STATIONS = [
-            { id: '920', name: '三聖總站', en: 'Sam Shing Terminus', lat: 22.382347, lng: 113.977345 },
-            { id: '265', name: '兆麟', en: 'Siu Lun', lat: 22.384918, lng: 113.975370 },
-            { id: '270', name: '安定', en: 'On Ting', lat: 22.3865, lng: 113.9775 },
-            { id: '280', name: '市中心', en: 'Town Centre', lat: 22.3895, lng: 113.9785 },
-            { id: '295', name: '屯門站', en: 'Tuen Mun', lat: 22.3905, lng: 113.9735 },
+            { id: '920', name: '三聖總站', en: 'Sam Shing Terminus' },
+            { id: '265', name: '兆麟', en: 'Siu Lun' },
+            { id: '270', name: '安定', en: 'On Ting' },
+            { id: '280', name: '市中心', en: 'Town Centre' },
+            { id: '295', name: '屯門站', en: 'Tuen Mun' },
         ];
-        // 🗺️ 各站 Google 地圖座標 (KMB/城巴為官方 API 實測；MTR巴士/綠Van/輕鐵為同區核實座標)
-        const STOP_MAP_COORDS = {
-            // KMB (data.etabus.gov.hk 官方)
-            'A3658E938F378588': [22.382347, 113.977345],
-            'A2586669ADE21A28': [22.382310, 113.977442],
-            '07B714029E91FD81': [22.384918, 113.975370],
-            '1D44677AEFBA8773': [22.384297, 113.975334],
-            'E105131B41FBAF33': [22.382919, 113.976175],
-            // 城巴 (rt.data.gov.hk 官方)
-            '001922': [22.382870572091, 113.97629109053],
-            '003208': [22.501662252091, 113.94518812053],
-            // 港鐵巴士 (同區站位)
-            'K51-D140': [22.3832, 113.9782],
-            'K51A-D150': [22.3832, 113.9782],
-            'K53-D110': [22.3832, 113.9782],
-            'K52-nU070': [22.382919, 113.976175],
-            'K52-nD240': [22.382347, 113.977345],
-            '506-D010': [22.382919, 113.976175],
-        };
         // 各 505 卡片當前鎖定的站頭：去程預設三聖總站 / 回程預設屯門站
         const LRT_505_SEL = { 'lrt-505-out': '920', 'lrt-505-in': '295' };
+        // 🚐 綠Van各站滑動選站 (44/44B1/44B/N44B)
+        const GMB_STATIONS = {
+            'gmb-44-tsuining': [
+                { seq: 1, name: '屯門碼頭總站' },
+                { seq: 2, name: '湖翠路 (邁亞美海灣)' },
+                { seq: 3, name: '湖翠路 (海翠花園)' },
+                { seq: 4, name: '湖翠路 (美樂花園)' },
+                { seq: 5, name: '龍門路 (蝴蝶輕鐵站/蝴蝶邨)' },
+                { seq: 6, name: '龍門路 (新屯門中心)' },
+                { seq: 7, name: '龍門路 (龍門居/龍門站)' },
+                { seq: 8, name: '海珠路 (豐景園)' },
+                { seq: 9, name: '海珠路 (翠寧花園 - 翠寧站)' },
+                { seq: 10, name: '友愛邨 (屯門鄉事會路)' },
+                { seq: 11, name: '屯門市中心 (輕鐵站)' },
+                { seq: 12, name: '紅橋 (新和里遊樂場)' },
+                { seq: 13, name: '上水站總站' },
+            ],
+            'gmb-44b1-tsuining': [
+                { seq: 1, name: '屯門碼頭總站' },
+                { seq: 2, name: '湖翠路 (邁亞美海灣)' },
+                { seq: 3, name: '湖翠路 (海翠花園)' },
+                { seq: 4, name: '湖翠路 (美樂花園)' },
+                { seq: 5, name: '龍門路 (蝴蝶輕鐵站)' },
+                { seq: 6, name: '龍門路 (新屯門中心)' },
+                { seq: 7, name: '龍門路 (龍門輕鐵站)' },
+                { seq: 8, name: '海珠路 (豐景園)' },
+                { seq: 9, name: '海珠路 (翠寧花園 - 翠寧站)' },
+                { seq: 10, name: '友愛邨 (屯門鄉事會路)' },
+                { seq: 11, name: '屯門市中心 (輕鐵站)' },
+                { seq: 12, name: '落馬洲 (新田) 總站' },
+            ],
+            'gmb-44b-tuenmun': [
+                { seq: 1, name: '屯門站總站' },
+                { seq: 2, name: '震寰路 (屯門消防局)' },
+                { seq: 3, name: '震寰路 (大興政府合署)' },
+                { seq: 4, name: '石排頭路 (翠林花園)' },
+                { seq: 5, name: '石排頭路 (康德花園)' },
+                { seq: 6, name: '石排頭路 (偉昌工業中心)' },
+                { seq: 7, name: '鳴琴路 (石排輕鐵站)' },
+                { seq: 8, name: '田景路 (新圍輕鐵站)' },
+                { seq: 9, name: '田景路 (田景輕鐵站)' },
+                { seq: 10, name: '鳴琴路 (寶田商場)' },
+                { seq: 11, name: '震寰路 (大興警署)' },
+                { seq: 12, name: '青麟路 (麒麟輕鐵站)' },
+                { seq: 13, name: '青麟路 (兆康苑)' },
+                { seq: 14, name: '落馬洲 (新田) 總站' },
+            ],
+            'gmb-n44b-tsuining': [
+                { seq: 1, name: '屯門碼頭總站' },
+                { seq: 2, name: '湖翠路 (邁亞美海灣)' },
+                { seq: 3, name: '湖翠路 (海翠花園)' },
+                { seq: 4, name: '湖翠路 (美樂花園)' },
+                { seq: 5, name: '龍門路 (蝴蝶輕鐵站)' },
+                { seq: 6, name: '龍門路 (新屯門中心)' },
+                { seq: 7, name: '龍門路 (龍門輕鐵站)' },
+                { seq: 8, name: '海珠路 (豐景園)' },
+                { seq: 9, name: '海珠路 (翠寧花園)' },
+                { seq: 10, name: '友愛邨 (屯門鄉事會路)' },
+                { seq: 11, name: '屯門市中心 (輕鐵站)' },
+                { seq: 12, name: '屯門站 (公共運輸交匯處)' },
+                { seq: 13, name: '震寰路 (屯門消防局)' },
+                { seq: 14, name: '震寰路 (大興政府合署)' },
+                { seq: 15, name: '石排頭路 (翠林花園)' },
+                { seq: 16, name: '石排頭路 (康德花園)' },
+                { seq: 17, name: '石排頭路 (偉昌工業中心)' },
+                { seq: 18, name: '鳴琴路 (石排輕鐵站)' },
+                { seq: 19, name: '田景路 (新圍輕鐵站)' },
+                { seq: 20, name: '田景路 (田景輕鐵站)' },
+                { seq: 21, name: '鳴琴路 (寶田商場)' },
+                { seq: 22, name: '震寰路 (大興警署)' },
+                { seq: 23, name: '青麟路 (麒麟輕鐵站)' },
+                { seq: 24, name: '青麟路 (兆康苑)' },
+                { seq: 25, name: '落馬洲 (新田) 交匯處' },
+                { seq: 26, name: '落馬洲管制站' },
+            ],
+        };
+        // 各綠Van卡當前選擇嘅站 (預設值)
+        const GMB_SEL = {
+            'gmb-44-tsuining': 9,
+            'gmb-44b1-tsuining': 9,
+            'gmb-44b-tuenmun': 1,
+            'gmb-n44b-tsuining': 9,
+        };
         // 取某卡片的膠囊按鈕順序 (去程：三聖➔屯門站；回程：屯門站➔三聖)
         function lrtPillOrder(itemId) {
             return itemId === 'lrt-505-in' ? [...LRT_505_STATIONS].reverse() : LRT_505_STATIONS;
@@ -1998,6 +2055,15 @@
                             <div id="pills-${item.id}" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">${buildLRTPills(item.id)}</div>
                         </div>`;
                     }
+                    // 🚐 綠Van：橫滑車站膠囊按鈕 (44/44B1/44B/N44B)
+                    let gmbPillsHtml = '';
+                    if (item.type === 'GMB_DIRECT' && GMB_STATIONS[item.id]) {
+                        gmbPillsHtml = `
+                        <div class="mt-2">
+                            <div class="text-[10px] font-bold text-slate-400 dark:text-slate-500 mb-1 flex items-center gap-1"><i class="fa-solid fa-hand-pointer"></i> 點選切換上車站 <span class="font-normal opacity-80">Tap to switch boarding stop</span></div>
+                            <div id="gmb-pills-${item.id}" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">${buildGMBPills(item.id)}</div>
+                        </div>`;
+                    }
 
                     html += `
                         <div class="p-3.5 flex justify-between items-center pulse-bg transition hover:bg-slate-50 dark:hover:bg-slate-800/40" id="row-${item.id}">
@@ -2008,6 +2074,7 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center flex-wrap gap-2">${routeHtml} ${subLabel}</div>
                                     ${lrtPillsHtml}
+                                    ${gmbPillsHtml}
                                     <div id="name-${item.id}" class="text-sm text-slate-800 dark:text-slate-200 font-black bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 inline-block px-2.5 py-1 rounded-lg mt-2">檢查站點 Checking...</div>
                                 </div>
                             </div>
@@ -2053,20 +2120,7 @@
             else if (stopName && stopName.includes('深圳灣')) stopNameEn = 'Shenzhen Bay Port';
 
             if (stopName) {
-                // 🗺️ 找出此站座標 (卡片 lat/lng → STOP_MAP_COORDS → 輕鐵站表)
-                let mapLat = null, mapLng = null;
-                const routeItem = (typeof ROUTES !== 'undefined') ? ROUTES.find(r => r.id === id) : null;
-                if (routeItem && routeItem.lat && routeItem.lng) {
-                    mapLat = routeItem.lat; mapLng = routeItem.lng;
-                } else if (routeItem && routeItem.stop_id && STOP_MAP_COORDS[routeItem.stop_id]) {
-                    [mapLat, mapLng] = STOP_MAP_COORDS[routeItem.stop_id];
-                } else if (lrtMeta && lrtMeta.lat) {
-                    mapLat = lrtMeta.lat; mapLng = lrtMeta.lng;
-                }
-                const mapBtn = (mapLat && mapLng)
-                    ? ` <a href="https://www.google.com/maps/search/?api=1&query=${mapLat},${mapLng}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-[11px] font-black text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-2 py-0.5 rounded-full ml-1 align-middle no-underline" title="在 Google 地圖開啟"><i class="fa-solid fa-map-location-dot"></i>地圖</a>`
-                    : '';
-                nameEl.innerHTML = `📍 ${stopName}${mapBtn} ${stopNameEn ? `<span class="text-xs font-normal text-slate-500 dark:text-slate-400 block">${stopNameEn}</span>` : ''}`;
+                nameEl.innerHTML = `📍 ${stopName} ${stopNameEn ? `<span class="text-xs font-normal text-slate-500 dark:text-slate-400 block">${stopNameEn}</span>` : ''}`;
                 nameEl.className = `text-sm text-slate-900 dark:text-slate-100 font-black bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 inline-block px-2.5 py-1 rounded-lg mt-2`;
             } else {
                 nameEl.innerHTML = `❌ 暫無班次 <span class="text-xs font-normal text-red-500 block">No Bus</span>`;
@@ -2203,6 +2257,37 @@
             if (item) fetchLRTDir(item);
         }
 
+        // 🚐 綠Van滑動選站：橫滑車站膠囊按鈕
+        function buildGMBPills(itemId) {
+            const stations = GMB_STATIONS[itemId] || [];
+            const sel = GMB_SEL[itemId];
+            const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
+            let h = '';
+            stations.forEach((st, i) => {
+                const active = st.seq === sel;
+                const cls = active
+                    ? 'bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-500/30'
+                    : 'bg-emerald-50 dark:bg-slate-800 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-900';
+                h += `<button onclick="selectGMBStation('${itemId}',${st.seq},event)" class="${base} ${cls}">${st.name}</button>`;
+                if (i < stations.length - 1) h += `<span class="flex-shrink-0 text-slate-300 dark:text-slate-600 text-[10px]">➔</span>`;
+            });
+            return h;
+        }
+
+        function selectGMBStation(itemId, stopSeq, event) {
+            if (event) event.stopPropagation();
+            if (GMB_SEL[itemId] === stopSeq) return;
+            GMB_SEL[itemId] = stopSeq;
+            const box = document.getElementById(`gmb-pills-${itemId}`);
+            if (box) box.innerHTML = buildGMBPills(itemId);
+            const etaEl = document.getElementById(`eta-${itemId}`);
+            if (etaEl) etaEl.innerHTML = `<i class="fa-solid fa-spinner spin text-slate-400 text-xl"></i>`;
+            const row = document.getElementById(`row-${itemId}`);
+            if (row) row.classList.add('pulse-bg');
+            const item = ROUTES.find(r => r.id === itemId);
+            if (item) fetchGMBDirect(item);
+        }
+
         // 🚇 屯馬綫 Next Train（港鐵官方）：屯門站 ➔ 烏溪沙。官方 API 偶有短暫回空，最多試 3 次（退避重試），仍無則如實回傳空陣列 (絕不偽造班次時間)
         async function fetchTMLNext(item) {
             const stopName = '屯門站';
@@ -2294,8 +2379,12 @@
 
         // 44 / 44B1 翠寧站專用抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMBDirect(item) {
-            const stopTitle = item.stop_name || '海珠路 (翠寧花園 - 翠寧站)';
-            const url = `${GMB_API_BASE}${item.route_id}/${item.route_seq}/${item.stop_seq}`;
+            // 用滑動選站嘅選擇 (如有)，否則用卡片預設
+            const selSeq = (GMB_SEL && GMB_SEL[item.id]) || item.stop_seq;
+            const stations = (typeof GMB_STATIONS !== 'undefined' && GMB_STATIONS[item.id]) || [];
+            const selStation = stations.find(s => s.seq === selSeq);
+            const stopTitle = selStation ? selStation.name : (item.stop_name || '海珠路 (翠寧花園 - 翠寧站)');
+            const url = `${GMB_API_BASE}${item.route_id}/${item.route_seq}/${selSeq}`;
             const rawEtas = await fetchGMBEtaHonest(url);
             rawEtas.sort((a, b) => a.diff - b.diff);
             renderResult(item.id, stopTitle, rawEtas, item.color);
