@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.9.5) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.9.7) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.5</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.7</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -310,7 +310,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.5</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.7</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -1011,6 +1011,40 @@
                 group: 'B3 深圳灣口岸專線',
                 group_en: 'B3 Cross-Boundary Bus',
                 color: 'amber'
+            },
+            {
+                id: 'kmb-b1-yuenlong',
+                type: 'KMB_DIRECT',
+                category: 'kmb',
+                route: 'B1',
+                bound: 'O', // 元朗站總站 (YL961)，outbound seq 11
+                stop_id: '87E436C0C5646BCE', // 元朗站總站 (YL961)，outbound seq 11
+                stop_name: '元朗站總站',
+                label: '往 落馬洲站 (福田口岸)',
+                label_en: 'To Lok Ma Chau Station (Futian Port)',
+                group: 'B1 落馬洲支線',
+                group_en: 'B1 Lok Ma Chau Spur Line',
+                color: 'red'
+            },
+            {
+                id: 'huanggang-bus-santin',
+                type: 'STATIC_INFO',
+                category: 'kmb',
+                stop_name: '新田公共運輸交匯處',
+                label: '新田 ➔ 落馬洲管制站 ➔ 皇崗口岸',
+                label_en: 'San Tin ➔ Lok Ma Chau Control Point ➔ Huanggang Port',
+                group: '皇巴士',
+                group_en: 'Huanggang Shuttle Bus',
+                color: 'amber',
+                static_info: {
+                    frequency: '每 5-10 分鐘一班',
+                    frequency_en: 'Every 5-10 mins',
+                    hours: '24小時服務',
+                    hours_en: '24-hour service',
+                    fare: '$10',
+                    note: '經落馬洲管制站，需下車過關後再上車',
+                    note_en: 'Via Lok Ma Chau Control Point, alight for immigration then re-board'
+                }
             }
         ];
 
@@ -2035,14 +2069,16 @@
                         badgeBg = item.id === 'lrt-505-out' ? 'bg-blue-100 dark:bg-blue-950 text-blue-900 dark:text-blue-200 border border-blue-400' : 'bg-orange-100 dark:bg-orange-950 text-orange-900 dark:text-orange-200 border border-orange-400';
                     } else if (item.type.startsWith('GMB')) {
                         badgeBg = 'bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-400';
-                    } else if (item.route.startsWith('962')) {
+                    } else if (item.route && item.route.startsWith('962')) {
                         badgeBg = 'bg-rose-100 dark:bg-rose-950 text-rose-900 dark:text-rose-200 border border-rose-400';
                     }
 
                     let routeHtml = `
                         <div class="font-black text-slate-900 dark:text-white flex flex-col">
                             <div class="flex items-center gap-2">
-                                <span class="${badgeBg} px-2.5 py-1 rounded-xl font-black text-2xl sm:text-3xl shadow-xs route-title-badge">${item.route}</span> 
+                                ${item.type === 'STATIC_INFO'
+                                    ? `<span class="${badgeBg} px-2.5 py-1 rounded-xl font-black text-xl sm:text-2xl shadow-xs route-title-badge">皇巴</span>`
+                                    : `<span class="${badgeBg} px-2.5 py-1 rounded-xl font-black text-2xl sm:text-3xl shadow-xs route-title-badge">${item.route}</span>`} 
                                 <span class="text-lg sm:text-xl text-slate-900 dark:text-white font-black tracking-tight">${item.label || ''}</span>
                             </div>
                             <span class="text-xs font-semibold text-slate-400 dark:text-slate-400 ml-1 mt-0.5 tracking-tight">${item.label_en || ''}</span>
@@ -2473,6 +2509,31 @@
             renderResult(item.id, stopTitle, rawEtas, item.color);
         }
 
+        // 靜態資訊卡 (無實時 API，如皇巴士)：直接顯示固定班次資料，不偽造 ETA
+        async function fetchStaticInfo(item) {
+            const info = item.static_info || {};
+            const nameEl = document.getElementById(`name-${item.id}`);
+            const etaEl = document.getElementById(`eta-${item.id}`);
+            const row = document.getElementById(`row-${item.id}`);
+            if (row) row.classList.remove('pulse-bg');
+            if (!nameEl || !etaEl) return;
+
+            nameEl.innerHTML = `📍 ${item.stop_name || ''}`;
+            nameEl.className = `text-sm text-slate-900 dark:text-slate-100 font-black bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 inline-block px-2.5 py-1 rounded-lg mt-2`;
+
+            etaEl.innerHTML = `
+                <div class="flex flex-col items-end gap-1.5">
+                    <div class="text-sm font-black text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 px-3 py-1.5 rounded-xl text-center">
+                        ${info.frequency || ''}<br>
+                        <span class="text-xs font-normal">${info.frequency_en || ''}</span>
+                    </div>
+                    <div class="text-xs text-slate-600 dark:text-slate-400 text-right">
+                        ${info.hours || ''} · ${info.fare || ''}<br>
+                        <span class="opacity-80">${info.note || ''}</span>
+                    </div>
+                </div>`;
+        }
+
         // 九巴通用與翠寧優先抓取
         // 九巴/龍運官方 ETA 誠實抓取：stop_id、bound、seq 全部已事先用官方 route-stop API 逐條核實鎖定（對照站牌實地照片），唔再做關鍵字猜測。
         // 官方 API 偶有短暫回空（例如非服務時間），會退避重試最多 3 次；仍然無資料就如實顯示「暫無預測班次」。
@@ -2565,6 +2626,7 @@
                 if (item.type === 'MTRBUS_REAL') return fetchMTRBusReal(item);
                 if (item.type === 'GMB_43C') return fetchGMB43C(item);
                 if (item.type === 'GMB_140M') return fetchGMB140M(item);
+                if (item.type === 'STATIC_INFO') return fetchStaticInfo(item);
             });
 
             await Promise.allSettled(promises);
