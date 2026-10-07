@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.9.24) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.9.25) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.24</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.25</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -309,7 +309,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.24</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.25</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -3910,11 +3910,23 @@ const MTRBUS_STATIONS = {
                         r.label = parts[1] + ' ➔ ' + parts[0];
                     }
                 }
+                if (r.label_en) {
+                    const partsEn = r.label_en.split('➔').map(s => s.trim());
+                    if (partsEn.length === 2) {
+                        r.label_en = partsEn[1] + ' ➔ ' + partsEn[0];
+                    }
+                }
             } else if (r.type === 'CTB_DIRECT') {
                 if (r.label) {
                     const parts = r.label.split('➔').map(s => s.trim());
                     if (parts.length === 2) {
                         r.label = parts[1] + ' ➔ ' + parts[0];
+                    }
+                }
+                if (r.label_en) {
+                    const partsEn = r.label_en.split('➔').map(s => s.trim());
+                    if (partsEn.length === 2) {
+                        r.label_en = partsEn[1] + ' ➔ ' + partsEn[0];
                     }
                 }
             } else if (r.type === 'GMB_DIRECT') {
@@ -3937,6 +3949,13 @@ const MTRBUS_STATIONS = {
                         r.label = parts[1] + ' ➔ ' + parts[0];
                     }
                 }
+                // 英文label都要反轉
+                if (r.label_en) {
+                    const partsEn = r.label_en.split('➔').map(s => s.trim());
+                    if (partsEn.length === 2) {
+                        r.label_en = partsEn[1] + ' ➔ ' + partsEn[0];
+                    }
+                }
             } else if (r.type === 'GMB_140M') {
                 // 140M回程用 route_seq 2
                 r.route_seq = r.route_seq === 1 ? 2 : 1;
@@ -3946,12 +3965,24 @@ const MTRBUS_STATIONS = {
                         r.label = parts[1] + ' ➔ ' + parts[0];
                     }
                 }
+                if (r.label_en) {
+                    const partsEn = r.label_en.split('➔').map(s => s.trim());
+                    if (partsEn.length === 2) {
+                        r.label_en = partsEn[1] + ' ➔ ' + partsEn[0];
+                    }
+                }
             } else if (r.type === 'GMB_43C') {
                 // 43C 是循環線，回程維持不變 (但用回程站表)
                 if (r.label) {
                     const parts = r.label.split('➔').map(s => s.trim());
                     if (parts.length === 2) {
                         r.label = parts[1] + ' ➔ ' + parts[0];
+                    }
+                }
+                if (r.label_en) {
+                    const partsEn = r.label_en.split('➔').map(s => s.trim());
+                    if (partsEn.length === 2) {
+                        r.label_en = partsEn[1] + ' ➔ ' + partsEn[0];
                     }
                 }
             } else if (r.type === 'KMB_B1') {
@@ -4100,7 +4131,7 @@ const MTRBUS_STATIONS = {
                     let subLabel = '';
                     if (item.id === 'kmb-261') {
                         subLabel = `<span class="text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 font-black px-2.5 py-0.5 rounded-full border border-amber-300">⭐ 預設翠寧站 Tsui Ning</span>`;
-                    } else if (item.id === 'gmb-44-tsuining' || item.id === 'gmb-44b1-tsuining') {
+                    } else if ((item.id === 'gmb-44-tsuining' || item.id === 'gmb-44b1-tsuining') && !isReturnMode) {
                         subLabel = `<span class="text-xs bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-200 font-black px-2.5 py-0.5 rounded-full border border-emerald-400">⭐ 翠寧花園開出 Tsui Ning</span>`;
                     } else if (item.category === 'siulun') {
                         subLabel = `<span class="text-xs bg-red-100 dark:bg-red-900/40 text-red-900 dark:text-red-200 font-black px-2 py-0.5 rounded-full border border-red-300/60">兆麟站/老鼠洲站 Siu Lun</span>`;
