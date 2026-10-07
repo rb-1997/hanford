@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.9.21) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.9.23) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.21</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.23</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -309,7 +309,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.21</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.23</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -3585,6 +3585,10 @@ const MTRBUS_STATIONS = {
                 }
 
                 let remarkStr = bus.remark ? ` <span class="text-xs text-emerald-200 font-normal">(${bus.remark})</span>` : '';
+                // 原定班次（非實時）加標示
+                if (bus.scheduled) {
+                    remarkStr += ` <span class="text-xs text-amber-300 font-normal">(原定班次)</span>`;
+                }
 
                 if (i === 0) {
                     const flashClass = isUrgent ? 'urgent-flash text-white' : 'bg-slate-900 dark:bg-slate-800 text-white border border-slate-700';
@@ -3908,8 +3912,28 @@ const MTRBUS_STATIONS = {
                         r.label = parts[1] + ' ➔ ' + parts[0];
                     }
                 }
-            } else if (r.type === 'GMB_DIRECT' || r.type === 'GMB_140M') {
-                // 綠Van回程用 route_seq 2
+            } else if (r.type === 'GMB_DIRECT') {
+                // 四字頭綠Van回程：轉 route_seq + 預設回程總站 (stop_seq 1)
+                r.route_seq = r.route_seq === 1 ? 2 : 1;
+                r.stop_seq = 1;
+                // 回程總站名 (按 route_id)
+                const returnOrigins = {
+                    2003966: '上水站總站', // 44回程
+                    2004197: '落馬洲(新田)公共交通交匯處', // 44B1回程
+                    2004164: '落馬洲(新田)公共交通交匯處', // 44B回程
+                    2004165: '落馬洲管制站' // N44B回程
+                };
+                if (returnOrigins[r.route_id]) {
+                    r.stop_name = returnOrigins[r.route_id];
+                }
+                if (r.label) {
+                    const parts = r.label.split('➔').map(s => s.trim());
+                    if (parts.length === 2) {
+                        r.label = parts[1] + ' ➔ ' + parts[0];
+                    }
+                }
+            } else if (r.type === 'GMB_140M') {
+                // 140M回程用 route_seq 2
                 r.route_seq = r.route_seq === 1 ? 2 : 1;
                 if (r.label) {
                     const parts = r.label.split('➔').map(s => s.trim());
@@ -4268,6 +4292,10 @@ const MTRBUS_STATIONS = {
                 }
 
                 let remarkStr = bus.remark ? ` <span class="text-xs text-emerald-200 font-normal">(${bus.remark})</span>` : '';
+                // 原定班次（非實時）加標示
+                if (bus.scheduled) {
+                    remarkStr += ` <span class="text-xs text-amber-300 font-normal">(原定班次)</span>`;
+                }
 
                 if (i === 0) {
                     const flashClass = isUrgent ? 'urgent-flash text-white' : 'bg-slate-900 dark:bg-slate-800 text-white border border-slate-700';
@@ -4848,7 +4876,9 @@ const MTRBUS_STATIONS = {
                         .sort((a, b) => a.eta_seq - b.eta_seq)
                         .map(d => {
                             let diffMins = getMins(d.eta);
-                            return { diff: diffMins, time: getEstimatedTimeStr(diffMins) };
+                            // 標記是否為原定班次（非實時）
+                            const isScheduled = (d.rmk_tc || '').includes('原定班次') || (d.rmk_en || '').includes('Scheduled');
+                            return { diff: diffMins, time: getEstimatedTimeStr(diffMins), scheduled: isScheduled };
                         });
                 }
                 return [];
