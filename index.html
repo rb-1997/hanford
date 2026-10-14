@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恆福花園交通資訊 (Version 3.9.26) Hanford Garden Transport</title>
+    <title>恆福花園交通資訊 (Version 3.9.28) Hanford Garden Transport</title>
     <!-- iOS / Android Web App (PWA) Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -110,7 +110,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white leading-tight">恆福花園交通資訊</h1>
-                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.26</span>
+                                <span class="text-[10px] font-black bg-emerald-500 text-slate-950 px-1.5 py-0.5 rounded">v3.9.28</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Hanford Transport Hub</p>
                         </div>
@@ -309,7 +309,7 @@
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">44專線站點提醒</h1>
-                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.26</span>
+                                <span class="text-xs font-black bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-md">v3.9.28</span>
                             </div>
                             <p class="text-[11px] text-slate-300 font-bold leading-none mt-0.5">Green Minibus 44 Series Live</p>
                         </div>
@@ -3403,6 +3403,7 @@ const MTRBUS_STATIONS = {
         const CACHE = {};
         let activeTab = 'all';
         let isReturnMode = false; // 回程模式標誌
+        let favReturnMode = false; // 我的最愛回程模式標誌 (方案A)
         const MTRBUS_SEL_R_CHOSEN = {}; // 追蹤回程模式下用戶是否手動選過站
         const TML_SEL_R = { 'tml-tum-wks': 'YUL' }; // 屯馬綫回程預設元朗站
         const MTRBUS_SEL_R = {
@@ -3975,6 +3976,8 @@ const MTRBUS_STATIONS = {
         function setTab(tab) {
             activeTab = tab;
             isReturnMode = (tab === 'return');
+            // 切換頁籤時重置我的最愛回程模式
+            if (tab !== 'fav') favReturnMode = false;
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 if (btn.id === 'tab-siulun') {
                     btn.className = 'tab-btn bg-slate-800 text-red-400 border border-red-500/40 px-1 py-2 rounded-lg transition text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1';
@@ -3990,6 +3993,12 @@ const MTRBUS_STATIONS = {
                     activeBtn.className = 'tab-btn bg-emerald-600 text-white px-1 py-2 rounded-lg transition shadow-sm text-[11px] sm:text-xs font-black active:scale-95 flex items-center justify-center gap-1';
                 }
             }
+            renderUI();
+        }
+
+        // ⭐ 我的最愛去程/回程切換 (方案A)
+        function toggleFavReturn() {
+            favReturnMode = !favReturnMode;
             renderUI();
         }
 
@@ -4161,6 +4170,23 @@ const MTRBUS_STATIONS = {
             if (isReturnTab) {
                 filtered = filtered.map(item => toReturnItem(item));
             }
+            // 我的最愛回程模式 (方案A)：收藏卡轉為回程方向
+            if (activeTab === 'fav' && favReturnMode) {
+                filtered = filtered.map(item => toReturnItem(item));
+            }
+
+            // 我的最愛頁頂加去程/回程切換掣
+            let favToggleHtml = '';
+            if (activeTab === 'fav' && filtered.length > 0) {
+                const toggleLabel = favReturnMode ? '回程 ↩' : '去程 ➔';
+                const toggleColor = favReturnMode ? 'bg-cyan-600' : 'bg-slate-700';
+                favToggleHtml = `
+                <div class="mb-3 flex justify-center">
+                    <button onclick="toggleFavReturn()" class="${toggleColor} hover:opacity-90 text-white font-black text-sm px-6 py-2 rounded-full shadow transition active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i> ${toggleLabel} <span class="text-xs font-normal opacity-80">${favReturnMode ? 'Return' : 'Outbound'}</span>
+                    </button>
+                </div>`;
+            }
 
             if (filtered.length === 0) {
                 container.innerHTML = '';
@@ -4249,7 +4275,7 @@ const MTRBUS_STATIONS = {
                     let subLabel = '';
                     if (item.id === 'kmb-261') {
                         subLabel = `<span class="text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 font-black px-2.5 py-0.5 rounded-full border border-amber-300">⭐ 預設翠寧站 Tsui Ning</span>`;
-                    } else if ((item.id === 'gmb-44-tsuining' || item.id === 'gmb-44b1-tsuining') && !isReturnMode) {
+                    } else if ((item.id === 'gmb-44-tsuining' || item.id === 'gmb-44b1-tsuining') && !(isReturnMode || (activeTab === 'fav' && favReturnMode))) {
                         subLabel = `<span class="text-xs bg-emerald-100 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-200 font-black px-2.5 py-0.5 rounded-full border border-emerald-400">⭐ 翠寧花園開出 Tsui Ning</span>`;
                     } else if (item.category === 'siulun') {
                         subLabel = `<span class="text-xs bg-red-100 dark:bg-red-900/40 text-red-900 dark:text-red-200 font-black px-2 py-0.5 rounded-full border border-red-300/60">兆麟站/老鼠洲站 Siu Lun</span>`;
@@ -4361,11 +4387,11 @@ const MTRBUS_STATIONS = {
                 });
                 html += `</div></section>`;
             });
-            container.innerHTML = html;
+            container.innerHTML = favToggleHtml + html;
             
             filtered.forEach(item => {
                 // 回程模式用唔同cache key，避免同正常模式撈亂
-                const cacheKey = isReturnMode ? `eta_result_return_${item.id}` : `eta_result_${item.id}`;
+                const cacheKey = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? `eta_result_return_${item.id}` : `eta_result_${item.id}`;
                 if (CACHE[cacheKey]) {
                     const data = CACHE[cacheKey];
                     renderResult(item.id, data.stopName, data.etas, item.color);
@@ -4378,7 +4404,7 @@ const MTRBUS_STATIONS = {
 
         function renderResult(id, stopName, etas, colorTheme) {
             // 回程模式用唔同cache key
-            const cacheKey = (typeof isReturnMode !== 'undefined' && isReturnMode) ? `eta_result_return_${id}` : `eta_result_${id}`;
+            const cacheKey = (typeof isReturnMode !== 'undefined' && (isReturnMode || (activeTab === 'fav' && favReturnMode))) ? `eta_result_return_${id}` : `eta_result_${id}`;
             CACHE[cacheKey] = { stopName, etas };
 
             const nameEl = document.getElementById(`name-${id}`);
@@ -4558,8 +4584,8 @@ const MTRBUS_STATIONS = {
 
         // 🚐 綠Van滑動選站：橫滑車站膠囊按鈕
         function buildGMBPills(itemId) {
-            const stationsMap = (isReturnMode && typeof GMB_STATIONS_R !== 'undefined' && GMB_STATIONS_R[itemId]) ? GMB_STATIONS_R : GMB_STATIONS;
-            const selMap = (isReturnMode && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[itemId] !== undefined) ? GMB_SEL_R : GMB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_STATIONS_R !== 'undefined' && GMB_STATIONS_R[itemId]) ? GMB_STATIONS_R : GMB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[itemId] !== undefined) ? GMB_SEL_R : GMB_SEL;
             const stations = (stationsMap && stationsMap[itemId]) || [];
             const sel = selMap ? selMap[itemId] : undefined;
             const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
@@ -4577,7 +4603,7 @@ const MTRBUS_STATIONS = {
 
         function selectGMBStation(itemId, stopSeq, event) {
             if (event) event.stopPropagation();
-            const selMap = (isReturnMode && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[itemId] !== undefined) ? GMB_SEL_R : GMB_SEL;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[itemId] !== undefined) ? GMB_SEL_R : GMB_SEL;
             if (selMap[itemId] === stopSeq) return;
             selMap[itemId] = stopSeq;
             const box = document.getElementById(`gmb-pills-${itemId}`);
@@ -4589,7 +4615,7 @@ const MTRBUS_STATIONS = {
             if (row) row.classList.add('pulse-bg');
             const item = ROUTES.find(r => r.id === itemId);
             if (item) {
-                const rItem = isReturnMode ? toReturnItem(item) : item;
+                const rItem = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? toReturnItem(item) : item;
                 if (rItem.type === 'GMB_43C') fetchGMB43C(rItem);
                 else if (rItem.type === 'GMB_140M') fetchGMB140M(rItem);
                 else fetchGMBDirect(rItem);
@@ -4600,7 +4626,7 @@ const MTRBUS_STATIONS = {
         function buildTMLPills(itemId) {
             const stations = TML_STATIONS || [];
             // 回程模式預設改為元朗站
-            const sel = isReturnMode ? (TML_SEL_R[itemId] || 'YUL') : TML_SEL[itemId];
+            const sel = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? (TML_SEL_R[itemId] || 'YUL') : TML_SEL[itemId];
             const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
             let h = '';
             stations.forEach((st, i) => {
@@ -4616,7 +4642,7 @@ const MTRBUS_STATIONS = {
 
         function selectTMLStation(itemId, stationCode, event) {
             if (event) event.stopPropagation();
-            const selMap = isReturnMode ? TML_SEL_R : TML_SEL;
+            const selMap = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? TML_SEL_R : TML_SEL;
             if (selMap[itemId] === stationCode) return;
             selMap[itemId] = stationCode;
             const box = document.getElementById(`tml-pills-${itemId}`);
@@ -4628,15 +4654,15 @@ const MTRBUS_STATIONS = {
             if (row) row.classList.add('pulse-bg');
             const item = ROUTES.find(r => r.id === itemId);
             if (item) {
-                const rItem = isReturnMode ? toReturnItem(item) : item;
+                const rItem = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? toReturnItem(item) : item;
                 fetchTMLNext(rItem);
             }
         }
 
         // 🚌 B1：橫滑車站膠囊
         function buildB1Pills(itemId) {
-            const stationsMap = (isReturnMode && typeof B1_STATIONS_R !== 'undefined') ? B1_STATIONS_R : null;
-            const selMap = (isReturnMode && typeof B1_SEL_R !== 'undefined') ? B1_SEL_R : B1_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof B1_STATIONS_R !== 'undefined') ? B1_STATIONS_R : null;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof B1_SEL_R !== 'undefined') ? B1_SEL_R : B1_SEL;
             const stations = stationsMap ? (stationsMap[itemId] || []) : (B1_STATIONS || []);
             const sel = (selMap && selMap[itemId]) || B1_SEL[itemId];
             const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
@@ -4654,7 +4680,7 @@ const MTRBUS_STATIONS = {
 
         function selectB1Station(itemId, stopId, event) {
             if (event) event.stopPropagation();
-            const selMap = (isReturnMode && typeof B1_SEL_R !== 'undefined') ? B1_SEL_R : B1_SEL;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof B1_SEL_R !== 'undefined') ? B1_SEL_R : B1_SEL;
             if (selMap[itemId] === stopId) return;
             selMap[itemId] = stopId;
             const box = document.getElementById(`b1-pills-${itemId}`);
@@ -4666,15 +4692,15 @@ const MTRBUS_STATIONS = {
             if (row) row.classList.add('pulse-bg');
             const item = ROUTES.find(r => r.id === itemId);
             if (item) {
-                const rItem = isReturnMode ? toReturnItem(item) : item;
+                const rItem = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? toReturnItem(item) : item;
                 fetchB1Direct(rItem);
             }
         }
 
         // 🚌 九巴/龍運：橫滑車站膠囊 (通用)
         function buildKMBPills(itemId) {
-            const stationsMap = (isReturnMode && typeof KMB_STATIONS_R !== 'undefined') ? KMB_STATIONS_R : KMB_STATIONS;
-            const selMap = (isReturnMode && typeof KMB_SEL_R !== 'undefined') ? KMB_SEL_R : KMB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof KMB_STATIONS_R !== 'undefined') ? KMB_STATIONS_R : KMB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof KMB_SEL_R !== 'undefined') ? KMB_SEL_R : KMB_SEL;
             const stations = (stationsMap && stationsMap[itemId]) || [];
             const sel = (selMap && selMap[itemId]) || '';
             const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
@@ -4692,7 +4718,7 @@ const MTRBUS_STATIONS = {
 
         function selectKMBStation(itemId, stopId, event) {
             if (event) event.stopPropagation();
-            const selMap = (isReturnMode && typeof KMB_SEL_R !== 'undefined') ? KMB_SEL_R : KMB_SEL;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof KMB_SEL_R !== 'undefined') ? KMB_SEL_R : KMB_SEL;
             if (typeof selMap === 'undefined') return;
             if (selMap[itemId] === stopId) return;
             selMap[itemId] = stopId;
@@ -4705,15 +4731,15 @@ const MTRBUS_STATIONS = {
             if (row) row.classList.add('pulse-bg');
             const item = ROUTES.find(r => r.id === itemId);
             if (item) {
-                const rItem = isReturnMode ? toReturnItem(item) : item;
+                const rItem = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? toReturnItem(item) : item;
                 fetchKMBDirect(rItem);
             }
         }
 
         // 🚌 城巴：橫滑車站膠囊 (通用)
         function buildCTBPills(itemId) {
-            const stationsMap = (isReturnMode && typeof CTB_STATIONS_R !== 'undefined') ? CTB_STATIONS_R : CTB_STATIONS;
-            const selMap = (isReturnMode && typeof CTB_SEL_R !== 'undefined') ? CTB_SEL_R : CTB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof CTB_STATIONS_R !== 'undefined') ? CTB_STATIONS_R : CTB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof CTB_SEL_R !== 'undefined') ? CTB_SEL_R : CTB_SEL;
             const stations = (stationsMap && stationsMap[itemId]) || [];
             const sel = (selMap && selMap[itemId]) || '';
             const base = 'stop-btn flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-black border transition active:scale-95 cursor-pointer';
@@ -4731,7 +4757,7 @@ const MTRBUS_STATIONS = {
 
         function selectCTBStation(itemId, stopId, event) {
             if (event) event.stopPropagation();
-            const selMap = (isReturnMode && typeof CTB_SEL_R !== 'undefined') ? CTB_SEL_R : CTB_SEL;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof CTB_SEL_R !== 'undefined') ? CTB_SEL_R : CTB_SEL;
             if (typeof selMap === 'undefined') return;
             if (selMap[itemId] === stopId) return;
             selMap[itemId] = stopId;
@@ -4744,7 +4770,7 @@ const MTRBUS_STATIONS = {
             if (row) row.classList.add('pulse-bg');
             const item = ROUTES.find(r => r.id === itemId);
             if (item) {
-                const rItem = isReturnMode ? toReturnItem(item) : item;
+                const rItem = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? toReturnItem(item) : item;
                 fetchCTBDirect(rItem);
             }
         }
@@ -4823,8 +4849,8 @@ const MTRBUS_STATIONS = {
         // 🚇 屯馬綫 Next Train（港鐵官方）：屯門站 ➔ 烏溪沙。官方 API 偶有短暫回空，最多試 3 次（退避重試），仍無則如實回傳空陣列 (絕不偽造班次時間)
         async function fetchTMLNext(item) {
             // 用滑動選站嘅選擇 (如有)，否則用卡片預設；回程模式預設元朗站
-            const defaultCode = isReturnMode ? 'YUL' : (item.station || 'TUM');
-            const selCode = isReturnMode ? (TML_SEL_R[item.id] || 'YUL') : ((TML_SEL && TML_SEL[item.id]) || defaultCode);
+            const defaultCode = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? 'YUL' : (item.station || 'TUM');
+            const selCode = (isReturnMode || (activeTab === 'fav' && favReturnMode)) ? (TML_SEL_R[item.id] || 'YUL') : ((TML_SEL && TML_SEL[item.id]) || defaultCode);
             const selStation = (TML_STATIONS || []).find(s => s.code === selCode);
             const stopName = selStation ? selStation.name + '站' : '屯門站';
             const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TML&sta=${selCode}`;
@@ -4916,8 +4942,8 @@ const MTRBUS_STATIONS = {
         // 44 / 44B1 翠寧站專用抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMBDirect(item) {
             // 用滑動選站嘅選擇 (如有)，否則用卡片預設；回程模式用回程站表
-            const selMap = (isReturnMode && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[item.id] !== undefined) ? GMB_SEL_R : GMB_SEL;
-            const stationsMap = (isReturnMode && typeof GMB_STATIONS_R !== 'undefined' && GMB_STATIONS_R[item.id]) ? GMB_STATIONS_R : GMB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[item.id] !== undefined) ? GMB_SEL_R : GMB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_STATIONS_R !== 'undefined' && GMB_STATIONS_R[item.id]) ? GMB_STATIONS_R : GMB_STATIONS;
             const selSeq = (selMap && selMap[item.id]) || item.stop_seq;
             const stations = (stationsMap && stationsMap[item.id]) || [];
             const selStation = stations.find(s => s.seq === selSeq);
@@ -4981,8 +5007,8 @@ const MTRBUS_STATIONS = {
         // 140M 專線小巴抓取 (官方實時數據，無數據時如實顯示)
         async function fetchGMB140M(item) {
             // 用滑動選站嘅選擇 (如有)，否則用卡片預設；回程模式用回程站表
-            const selMap = (isReturnMode && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[item.id] !== undefined) ? GMB_SEL_R : GMB_SEL;
-            const stationsMap = (isReturnMode && typeof GMB_STATIONS_R !== 'undefined' && GMB_STATIONS_R[item.id]) ? GMB_STATIONS_R : GMB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_SEL_R !== 'undefined' && GMB_SEL_R[item.id] !== undefined) ? GMB_SEL_R : GMB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof GMB_STATIONS_R !== 'undefined' && GMB_STATIONS_R[item.id]) ? GMB_STATIONS_R : GMB_STATIONS;
             const selSeq = (selMap && selMap[item.id]) || item.stop_seq || 1;
             const stations = (stationsMap && stationsMap[item.id]) || [];
             const selStation = stations.find(s => s.seq === selSeq);
@@ -5050,8 +5076,8 @@ const MTRBUS_STATIONS = {
 
         async function fetchKMBDirect(item) {
             // 用滑動選站嘅選擇 (如有)，否則用卡片預設；回程模式用回程站表
-            const stationsMap = (isReturnMode && typeof KMB_STATIONS_R !== 'undefined') ? KMB_STATIONS_R : KMB_STATIONS;
-            const selMap = (isReturnMode && typeof KMB_SEL_R !== 'undefined') ? KMB_SEL_R : KMB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof KMB_STATIONS_R !== 'undefined') ? KMB_STATIONS_R : KMB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof KMB_SEL_R !== 'undefined') ? KMB_SEL_R : KMB_SEL;
             const selStopId = (selMap && selMap[item.id]) || item.stop_id;
             const stations = (stationsMap && stationsMap[item.id]) || [];
             const selStation = stations.find(s => s.stop_id === selStopId);
@@ -5062,8 +5088,8 @@ const MTRBUS_STATIONS = {
 
         // B1 九巴 (支援滑動選站)：用 B1_SEL 嘅選擇，否則用卡片預設
         async function fetchB1Direct(item) {
-            const selMap = (isReturnMode && typeof B1_SEL_R !== 'undefined') ? B1_SEL_R : B1_SEL;
-            const stationsMap = (isReturnMode && typeof B1_STATIONS_R !== 'undefined') ? B1_STATIONS_R : null;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof B1_SEL_R !== 'undefined') ? B1_SEL_R : B1_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof B1_STATIONS_R !== 'undefined') ? B1_STATIONS_R : null;
             const selStopId = (selMap && selMap[item.id]) || B1_SEL[item.id] || item.stop_id;
             const stations = stationsMap ? (stationsMap[item.id] || []) : (B1_STATIONS || []);
             const selStation = stations.find(s => s.stop_id === selStopId);
@@ -5101,8 +5127,8 @@ const MTRBUS_STATIONS = {
         // 城巴直達抓取 (官方實時數據，無數據時如實顯示)
         async function fetchCTBDirect(item) {
             // 用滑動選站嘅選擇 (如有)，否則用卡片預設；回程模式用回程站表
-            const stationsMap = (isReturnMode && typeof CTB_STATIONS_R !== 'undefined') ? CTB_STATIONS_R : CTB_STATIONS;
-            const selMap = (isReturnMode && typeof CTB_SEL_R !== 'undefined') ? CTB_SEL_R : CTB_SEL;
+            const stationsMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof CTB_STATIONS_R !== 'undefined') ? CTB_STATIONS_R : CTB_STATIONS;
+            const selMap = ((isReturnMode || (activeTab === 'fav' && favReturnMode)) && typeof CTB_SEL_R !== 'undefined') ? CTB_SEL_R : CTB_SEL;
             const selStopId = (selMap && selMap[item.id]) || item.stop_id;
             const stations = (stationsMap && stationsMap[item.id]) || [];
             const selStation = stations.find(s => s.stop_id === selStopId);
@@ -5131,8 +5157,9 @@ const MTRBUS_STATIONS = {
             });
 
             const promises = ROUTES.map(origItem => {
-                // 回程模式：先轉換做回程版本先抓取
-                const item = (isReturnMode && typeof toReturnItem !== 'undefined') ? toReturnItem(origItem) : origItem;
+                // 回程模式：先轉換做回程版本先抓取 (包括我的最愛回程模式)
+                const effectiveReturn = isReturnMode || (activeTab === 'fav' && favReturnMode);
+                const item = (effectiveReturn && typeof toReturnItem !== 'undefined') ? toReturnItem(origItem) : origItem;
                 if (item.type === 'GMB_DIRECT') return fetchGMBDirect(item);
                 if (item.type === 'KMB_DIRECT') return fetchKMBDirect(item);
                 if (item.type === 'KMB_B1') return fetchB1Direct(item);
